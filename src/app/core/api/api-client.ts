@@ -1,10 +1,21 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, InjectionToken } from '@angular/core';
-import { environment } from '../../../environments/environment';
-export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL', {providedIn: 'root', factory: () => environment.apiBaseUrl});
-/** Transport boundary. Feature clients will map versioned contract DTOs here. */
-@Injectable({providedIn: 'root'})
+import { inject, Injectable } from '@angular/core';
+import { EMPTY, expand, map, reduce } from 'rxjs';
+import { CONFIG } from '../config';
+import { Page } from '../../shared/models';
+@Injectable({ providedIn: 'root' })
 export class ApiClient {
   readonly http = inject(HttpClient);
-  readonly baseUrl = inject(API_BASE_URL);
+  readonly baseUrl = inject(CONFIG).apiBaseUrl;
+  get<T>(path: string) {
+    return this.http.get<T>(this.baseUrl + '/api/v1' + path);
+  }
+  all<T>(path: string) {
+    const page = (index: number) => this.get<Page<T>>(path + '?page=' + index + '&size=100');
+    return page(0).pipe(
+      expand((p) => ((p.page + 1) * p.size < p.totalElements ? page(p.page + 1) : EMPTY)),
+      map((p) => p.content),
+      reduce((all, items) => all.concat(items), [] as T[]),
+    );
+  }
 }

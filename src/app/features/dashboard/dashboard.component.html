@@ -1,0 +1,68 @@
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">PLANTATION OVERVIEW</p>
+    <h1>Your estates, connected.</h1>
+    <p>Current Estate Service metadata across all estates you can access.</p>
+  </div>
+  <button (click)="load()" [disabled]="busy()">Refresh dashboard</button>
+</div>
+@if (busy()) {
+  <p role="status">Aggregating accessible estates…</p>
+}
+@if (error()) {
+  <p role="alert" class="error">{{ error() }} <button (click)="load()">Retry</button></p>
+}
+@if (!busy() && !error()) {
+  <div class="metrics">
+    <article>
+      <p>Accessible estates</p>
+      <strong>{{ estates() | number }}</strong>
+    </article>
+    <article>
+      <p>Divisions</p>
+      <strong>{{ divisions() | number }}</strong>
+    </article>
+    <article>
+      <p>Plantation blocks</p>
+      <strong>{{ stats().blocks | number }}</strong>
+    </article>
+    <article>
+      <p>Total planted area</p>
+      <strong>{{ stats().area | number: '1.0-2' }} <small>ha</small></strong>
+    </article>
+    <article>
+      <p>Planted trees</p>
+      <strong>{{ stats().planted | number }}</strong>
+    </article>
+    <article>
+      <p>Tappable trees</p>
+      <strong>{{ stats().tappable | number }}</strong>
+    </article>
+  </div>
+}
+<div class="dashboard-lower">
+  <article class="card">
+    <h2>Block status</h2>
+    <p>Active {{ stats().active }} · Inactive {{ stats().inactive }}</p>
+    <div
+      #chart
+      class="chart"
+      role="img"
+      [attr.aria-label]="
+        'Active blocks ' + stats().active + ', inactive blocks ' + stats().inactive
+      "
+    ></div>
+  </article>
+  <article class="card">
+    <p class="eyebrow">FROM RECORD TO LANDSCAPE</p>
+    <h2>A spatial view of your plantation</h2>
+    <p>
+      Explore estate boundaries, divisions, and rubber blocks in the digital twin. Select a block to
+      compare business records with GIS values.
+    </p>
+    <p class="muted">
+      Operational yield, crop health, and telemetry are planned for later milestones. No operational
+      estimates are shown here.
+    </p>
+  </article>
+</div>

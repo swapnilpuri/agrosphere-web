@@ -1,0 +1,75 @@
+<a class="skip" href="#main">Skip to content</a>
+<div class="app-shell" [class.collapsed]="collapsed()">
+  <aside class="navigation">
+    <a routerLink="/dashboard" class="brand"
+      ><span class="brand-mark">A</span
+      ><span>AgroSphere<small>PLANTATION INTELLIGENCE</small></span></a
+    >
+    <p class="eyebrow">WORKSPACE</p>
+    <nav aria-label="Main navigation">
+      @if (auth.canRead()) {
+        <a routerLink="/dashboard" routerLinkActive="active">◫ <span>Overview</span></a
+        ><a routerLink="/digital-twin" routerLinkActive="active">◎ <span>Digital twin</span></a>
+      }
+    </nav>
+    <div class="nav-foot"><span class="status-dot"></span><span>Milestone 2 · Rubber</span></div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar">
+      <button
+        aria-label="Toggle navigation"
+        [attr.aria-expanded]="!collapsed()"
+        (click)="collapsed.set(!collapsed())"
+      >
+        ☰
+      </button>
+      <div class="estate-picker">
+        <label for="estate-search">Estate search</label
+        ><input
+          id="estate-search"
+          type="search"
+          placeholder="Estate name or code"
+          [value]="estateQuery()"
+          (input)="estateQuery.set($any($event.target).value)"
+        /><label class="sr-only" for="estate-select">Current estate</label
+        ><select
+          id="estate-select"
+          [value]="store.estateId()"
+          (change)="store.selectEstate($any($event.target).value)"
+        >
+          @for (e of filteredEstates(); track e.id) {
+            <option [value]="e.id">{{ e.estateCode }} · {{ e.name }}</option>
+          } @empty {
+            <option value="">No matching estates</option>
+          }
+        </select>
+      </div>
+      <span class="user">{{ auth.username() }}</span
+      ><button (click)="auth.logout()">Log out</button>
+    </header>
+    <main id="main" tabindex="-1">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a routerLink="/dashboard">Workspace</a> /
+        {{ router.url.includes('digital-twin') ? 'Digital twin' : 'Overview' }}
+        @if (store.estate()) {
+          / {{ store.estate()?.estateCode }}
+        }
+      </nav>
+      @if (store.estateBusy()) {
+        <p role="status">Loading accessible estates…</p>
+      }
+      @if (store.error()) {
+        <div class="error" role="alert">
+          {{ store.error() }}
+          <button (click)="store.load()" [disabled]="store.estateBusy()">Retry</button>
+        </div>
+      }
+      @if (!store.estateBusy() && !store.estates().length && !store.error()) {
+        <p role="status">
+          No accessible estates. Ask your estate administrator to assign access or create an estate.
+        </p>
+      }
+      <router-outlet />
+    </main>
+  </div>
+</div>

@@ -1,0 +1,62 @@
+<aside class="detail" aria-label="Block details" aria-live="polite">
+  @if (store.selectedBlock(); as b) {
+    <button (click)="store.selectBlock('')">Clear selection</button>
+    <p class="eyebrow">PLANTATION BLOCK</p>
+    <h2>{{ b.blockCode }} · {{ b.name }}</h2>
+    <span class="badge">{{ b.status }}</span>
+    <h3>Business metadata · Estate Service</h3>
+    <dl>
+      <dt>Estate</dt>
+      <dd>{{ store.estate()?.name }}</dd>
+      <dt>Division</dt>
+      <dd>{{ divisionName(b.divisionId) }}</dd>
+      <dt>Rubber clone</dt>
+      <dd>{{ b.rubberCloneCode ?? 'Not supplied' }}</dd>
+      <dt>Planting date</dt>
+      <dd>{{ b.plantingDate ? (b.plantingDate | date: 'mediumDate' : 'UTC') : 'Not supplied' }}</dd>
+      <dt>Planted area</dt>
+      <dd>{{ b.plantedAreaHectares | number: '1.0-4' }} ha</dd>
+      <dt>Planted trees</dt>
+      <dd>{{ b.plantedTreeCount | number }}</dd>
+      <dt>Tappable trees</dt>
+      <dd>{{ b.tappableTreeCount | number }}</dd>
+    </dl>
+    <h3>GIS values · Spatial Service</h3>
+    @if (store.selectedGeometry(); as g) {
+      <dl>
+        <dt>Calculated area</dt>
+        <dd>
+          {{
+            g.calculatedAreaHectares === null
+              ? 'Not supplied'
+              : (g.calculatedAreaHectares | number: '1.0-4') + ' ha'
+          }}
+        </dd>
+        <dt>Geometry version</dt>
+        <dd>{{ g.geometryVersion }}</dd>
+        <dt>Provenance</dt>
+        <dd>{{ g.dataProvenance }}</dd>
+        <dt>Source</dt>
+        <dd>{{ g.sourceType }}</dd>
+        <dt>Geometry updated</dt>
+        <dd>{{ g.updatedAt | date: 'medium' }}</dd>
+      </dl>
+    } @else {
+      <p>No active geometry supplied for this block.</p>
+    }
+    <details>
+      <summary>Canonical identity</summary>
+      <p class="uuid">{{ b.id }}</p>
+    </details>
+  } @else {
+    <p class="eyebrow">EXPLORE YOUR ESTATE</p>
+    <h2>Select a block</h2>
+    <p>
+      Choose a polygon or search result to inspect its business metadata and authoritative GIS
+      geometry.
+    </p>
+  }
+  @if (store.detailError()) {
+    <p role="alert">{{ store.detailError() }}</p>
+  }
+</aside>

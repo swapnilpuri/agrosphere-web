@@ -1,6 +1,6 @@
 {
   "name": "agrosphere-web",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "engines": {
     "node": "^22.12.0 || >=24.0.0"
@@ -9,7 +9,16 @@
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test --watch=false",
-    "typecheck": "tsc --noEmit -p tsconfig.app.json"
+    "typecheck": "tsc --noEmit -p tsconfig.app.json",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "api:generate": "openapi-typescript contracts/estate.openapi.json -o src/api/estate.generated.ts && openapi-typescript contracts/spatial.openapi.json -o src/api/spatial.generated.ts",
+    "api:check": "node scripts/check-api.mjs",
+    "e2e": "playwright test --project=ui",
+    "e2e:graphics": "playwright test --project=graphics",
+    "e2e:live": "playwright test --project=live",
+    "preview": "node scripts/preview.mjs"
   },
   "dependencies": {
     "@angular/common": "21.2.25",
@@ -17,17 +26,29 @@
     "@angular/core": "21.2.25",
     "@angular/platform-browser": "21.2.25",
     "@angular/router": "21.2.25",
-    "rxjs": "7.8.2",
-    "tslib": "2.8.1",
     "cesium": "1.146.0",
-    "echarts": "6.1.0"
+    "echarts": "6.1.0",
+    "keycloak-js": "26.2.4",
+    "rxjs": "7.8.2",
+    "tslib": "2.8.1"
   },
   "devDependencies": {
     "@angular/build": "21.2.28",
     "@angular/cli": "21.2.28",
     "@angular/compiler-cli": "21.2.25",
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.64.1",
+    "eslint": "10.13.0",
+    "jsdom": "27.4.0",
+    "openapi-typescript": "7.13.0",
+    "prettier": "3.9.10",
     "typescript": "5.9.3",
-    "vitest": "4.1.0",
-    "jsdom": "27.4.0"
+    "typescript-eslint": "8.72.0",
+    "vitest": "4.1.12"
+  },
+  "overrides": {
+    "@angular/build": {
+      "undici": "7.30.1"
+    }
   }
 }

@@ -1,0 +1,13 @@
+<section aria-label="Spatial layers">
+  <h3>Layers & legend</h3>
+  @for (category of categories; track category) {
+    <label class="layer"
+      ><input
+        type="checkbox"
+        [checked]="store.visible().has(category)"
+        (change)="store.toggle(category)"
+      /><span class="swatch" [style.background]="colors[category]"></span>{{ category }}</label
+    >
+  }
+  <p class="muted">Only supplied geometry and positioned assets appear.</p>
+</section>

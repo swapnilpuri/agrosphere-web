@@ -1,0 +1,16 @@
+<div #canvas class="canvas" aria-label="Interactive estate globe"></div>
+<div class="viewer-tools">
+  <button (click)="reset()" [disabled]="!ready()">Reset view</button
+  ><button (click)="mode('2D')" [disabled]="!ready()">2D</button
+  ><button (click)="mode('3D')" [disabled]="!ready()">3D</button>
+</div>
+<div class="viewer-status" role="status">
+  {{ error() || status() }}
+  @if (moving()) {
+    · Navigating…
+  }
+  @if (navigation()) {
+    · {{ navigation() }}
+  }
+  · {{ renderedCount() }} spatial features · WGS84 longitude / latitude
+</div>

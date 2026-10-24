@@ -1,1 +1,1 @@
-export const environment = {production: false, apiBaseUrl: 'http://localhost:8080'} as const;
+export const environment = { production: false, apiBaseUrl: 'http://localhost:8080' } as const;

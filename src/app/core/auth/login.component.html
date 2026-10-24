@@ -1,0 +1,18 @@
+<main class="login card">
+  <p class="eyebrow">AGROSPHERE</p>
+  <h1>Your plantation.<br />Your perspective.</h1>
+  <p>Sign in with your estate account to explore the rubber plantation digital twin.</p>
+  @if (auth.error()) {
+    <p role="alert" class="error">{{ auth.error() }}</p>
+  }
+  @if (auth.authenticated() && !auth.canRead()) {
+    <p role="alert">
+      Your role cannot read Estate Service metadata. Ask an identity administrator for an estate
+      read role. AGRONOMIST alone currently has Spatial access only.
+    </p>
+    <button (click)="auth.logout()">Sign out</button>
+  } @else {
+    <button class="primary" (click)="login()">Sign in with Keycloak</button>
+  }
+  <p class="muted">Access is enforced by the Gateway and owning services.</p>
+</main>

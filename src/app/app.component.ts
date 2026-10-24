@@ -1,3 +1,9 @@
 import { Component } from '@angular/core';
-@Component({ selector: 'agrosphere-root', standalone: true, template: '<main><h1>AgroSphere</h1><p>Rubber Plantation Digital Twin — foundation scaffold</p><p>Estate visualization begins in Milestone 2.</p></main>' })
+import { RouterOutlet } from '@angular/router';
+@Component({
+  selector: 'agrosphere-root',
+  standalone: true,
+  imports: [RouterOutlet],
+  template: '<router-outlet />',
+})
 export class AppComponent {}

@@ -1,11 +1,11 @@
 # Repository instructions
 
-Work only within this independent Git repository. No parent repository, submodules, shared persistence models, cross-service SQL or multi-service Maven parent.
+This independent Git repository implements Milestone 2: Angular/CesiumJS browser digital twin. Preserve independent build, release, CI and Docker deployment. Do not create a parent repository, submodule, sibling runtime dependency, backend/BFF, shared persistence model, cloud deployment or new service endpoint.
 
-Current scope: Milestone 0 foundation only. Do not add business APIs, GIS functionality, AI models or Unreal gameplay/assets without a new milestone request.
+Business HTTP calls go exclusively through the configured Gateway /api/v1 routes. Types are generated from pinned OpenAPI snapshots under contracts/. Preserve canonical UUIDs and Spatial geometry/version/provenance. WGS84 GeoJSON coordinates are longitude/latitude; use Spatial-provided hectares, never planar degree area. Procedural trees would be illustrative; none are rendered here. No operations, telemetry streams, analytics projections or AI features are authorized.
 
-Use ports/adapters and service-owned migrations. APIs and events are designed in agrosphere-contracts; coordinate breaking changes through a versioned contract release, never a source path dependency. UUID estateId/blockId remain stable across clients. Mark data REAL, SIMULATED, ESTIMATED or PREDICTED. GeoJSON is WGS84 longitude/latitude (RFC 7946). Procedural trees are illustrative.
+Use feature-oriented standalone Angular components, Signals for local state, RxJS cancellation, Keycloak public Code/PKCE auth, and a dedicated Cesium lifecycle abstraction. Tokens remain in memory and must only attach to Gateway business routes. Do not log credentials or tokens. Keep private runtime config, traces with live credentials, large assets and local environment files out of Git. No remote creation or push is authorized.
 
-Never commit credentials, local environment files, generated datasets or large geospatial assets. Use environment examples containing placeholders only. No remote creation, push or cloud deployment is authorized.
+Run npm.cmd ci, npm.cmd run lint, npm.cmd run format:check, npm.cmd run typecheck, npm.cmd run api:check, npm.cmd test, npm.cmd run build, npm.cmd run e2e and npm.cmd run e2e:graphics. Run browser suites sequentially. Live E2E needs the independently maintained infrastructure and private environment credentials; traces are disabled. Verify Docker packaging when the engine is available. Report executed, failed and unavailable checks honestly; never infer reference-device FPS from software WebGL smoke results.
 
-Run repository checks documented in README.md. Report actual checks separately from unavailable checks. Version independently using SemVer and CHANGELOG.md; changes to 0.x contracts can still break consumers and require review.
+Version independently using SemVer/CHANGELOG.md. Coordinate contract changes with owning repositories; do not modify services to accommodate frontend assumptions.

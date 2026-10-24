@@ -1,0 +1,83 @@
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">SPATIAL INTELLIGENCE</p>
+    <h1>Estate digital twin</h1>
+    <p>
+      {{ store.estate()?.name ?? 'Choose an estate' }} · Authoritative geometry, connected metadata
+    </p>
+  </div>
+  <span class="badge">WGS84 · EPSG:4326</span>
+</div>
+@if (store.spatialError()) {
+  <div role="alert" class="error">
+    {{ store.spatialError() }} <button (click)="store.reset()">Retry GIS</button>
+  </div>
+}
+<div class="twin-grid">
+  <aside class="explorer">
+    <h2>Estate explorer</h2>
+    <label for="block-search">Find a block</label
+    ><input
+      id="block-search"
+      type="search"
+      placeholder="Block code or name"
+      [value]="store.query()"
+      (input)="store.query.set($any($event.target).value)"
+    />
+    <label for="division">Division</label
+    ><select
+      id="division"
+      [value]="store.selectedDivision()"
+      (change)="store.selectedDivision.set($any($event.target).value)"
+    >
+      <option value="">All divisions</option>
+      @for (d of store.divisions(); track d.id) {
+        <option [value]="d.id">{{ d.divisionCode }} · {{ d.name }}</option>
+      }
+    </select>
+    <div class="block-list" aria-label="Block search results">
+      @for (b of store.results(); track b.id) {
+        <button
+          [class.selected]="store.selectedBlock()?.id === b.id"
+          (click)="store.selectBlock(b.id)"
+        >
+          <strong>{{ b.blockCode }}</strong
+          ><span>{{ b.name }}</span
+          ><small>{{ b.id.slice(0, 8) }} · {{ b.status }}</small>
+        </button>
+      } @empty {
+        <p>No matching blocks.</p>
+      }
+    </div>
+    <agro-layer-manager />
+    <details>
+      <summary>Source layer catalog ({{ store.layers().length }})</summary>
+      @for (layer of store.layers(); track layer.id) {
+        <label class="layer"
+          ><input
+            type="checkbox"
+            [checked]="store.sourceVisible().has(layer.id)"
+            (change)="store.toggleSource(layer.id)"
+          />{{ layer.name }} · {{ layer.format }}</label
+        >
+      }
+      <p>
+        GeoJSON and 3D Tiles render from configured HTTPS origins. Other formats or unconfigured
+        sources remain catalog metadata.
+      </p>
+    </details>
+  </aside>
+  <section class="map-panel" aria-label="Estate visualization">
+    <agro-cesium-viewer />
+    @if (store.busy()) {
+      <div class="map-loading" role="status">Loading estate geometry…</div>
+    } @else if (!store.features().length) {
+      <div class="map-empty">No active geometry supplied for this estate.</div>
+    }
+  </section>
+  <agro-block-detail />
+</div>
+<p class="muted">
+  Data retrieved {{ store.timestamp() | date: 'medium' }} · Geometry provenance appears in block
+  details. Asset markers represent supplied positions; trees are not surveyed individually.
+</p>
