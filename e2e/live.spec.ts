@@ -32,6 +32,9 @@ test('real Keycloak and Gateway seeded estate workflow', async ({ page }) => {
   await expect(page.locator('.block-list button')).toHaveCount(1);
   await expect(page.locator('.viewer-status')).toContainText('spatial features');
   await expect(page.locator('.viewer-status')).not.toContainText('0 spatial features');
+  await expect(page.locator('.viewer-status')).not.toContainText(
+    'No geometry available for the selected record.',
+  );
   await expect(page.locator('.viewer-status')).not.toContainText('Navigating');
   await page.screenshot({ path: 'test-results/live-before-pick.png', fullPage: true });
   await detail.getByRole('button', { name: 'Clear selection' }).click();

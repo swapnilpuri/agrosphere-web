@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased - 2026-10-28
+
+- Reapply the current map selection after asynchronous geometry loading completes, clearing stale missing-geometry warnings and restoring the selected camera target. Add a delayed-load regression and a live-browser assertion; retain genuine warnings for records without geometry.
+
 ## 0.2.0 — 2026-10-24
 
 - Implement Angular Milestone 2 shell, guarded routing, Keycloak Code/PKCE session, memory token renewal and Gateway-only authorization.

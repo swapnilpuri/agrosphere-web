@@ -33,6 +33,7 @@ export class CesiumViewerComponent implements AfterViewInit, OnDestroy {
   readonly status = signal('Starting 3D viewer…');
   readonly error = signal('');
   readonly navigation = signal('');
+  private readonly loadedGeneration = signal(0);
   constructor() {
     effect(() => {
       const features = this.store.features();
@@ -43,7 +44,11 @@ export class CesiumViewerComponent implements AfterViewInit, OnDestroy {
           void this.engine
             .load(features, assets, layers)
             .then((count) => {
-              if (count !== undefined) this.zone.run(() => this.renderedCount.set(count));
+              if (count !== undefined)
+                this.zone.run(() => {
+                  this.renderedCount.set(count);
+                  this.loadedGeneration.update((generation) => generation + 1);
+                });
             })
             .catch(() =>
               this.zone.run(() =>
@@ -61,6 +66,7 @@ export class CesiumViewerComponent implements AfterViewInit, OnDestroy {
       if (this.ready()) this.engine.setVisible(visible);
     });
     effect(() => {
+      this.loadedGeneration();
       const id = this.store.selectedBlock()?.id ?? this.store.selectedDivision();
       if (this.ready()) {
         this.engine.select(id);
