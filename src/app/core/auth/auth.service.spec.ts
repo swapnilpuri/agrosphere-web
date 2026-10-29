@@ -9,7 +9,7 @@ const fake = vi.hoisted(() => ({
   logout: vi.fn(),
   login: vi.fn(),
   token: 'access',
-  tokenParsed: { preferred_username: 'viewer' },
+  tokenParsed: { preferred_username: 'viewer' } as Record<string, unknown>,
   realmAccess: { roles: ['VIEWER'] },
 }));
 vi.mock('keycloak-js', () => ({
@@ -22,6 +22,8 @@ vi.mock('keycloak-js', () => ({
 describe('Keycloak session', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    fake.realmAccess.roles = ['VIEWER'];
+    fake.tokenParsed = { preferred_username: 'viewer' };
     fake.init.mockResolvedValue(true);
     fake.updateToken.mockResolvedValue(false);
     TestBed.configureTestingModule({
@@ -56,5 +58,30 @@ describe('Keycloak session', () => {
     await expect(auth.token()).rejects.toThrow('Session expired');
     expect(auth.authenticated()).toBe(false);
     expect(fake.clearToken).toHaveBeenCalled();
+  });
+  it('permits estate creation only for platform administrators and scoped maintenance for managers', async () => {
+    const id = '00000000-0000-4000-8000-000000000001';
+    fake.realmAccess.roles = ['ESTATE_MANAGER', 'VIEWER'];
+    fake.tokenParsed['estate_ids'] = [id];
+    const auth = TestBed.inject(AuthService);
+    await auth.initialize();
+    expect(auth.canCreateEstate()).toBe(false);
+    expect(auth.canManageEstate(id)).toBe(true);
+    expect(auth.canManageEstate('foreign')).toBe(false);
+    auth.roles.set(['VIEWER']);
+    expect(auth.canManageEstate(id)).toBe(false);
+    auth.roles.set(['PLATFORM_ADMIN']);
+    expect(auth.canCreateEstate()).toBe(true);
+    expect(auth.canManageEstate('foreign')).toBe(true);
+  });
+  it('fails closed on missing or malformed trusted estate claims', async () => {
+    fake.realmAccess.roles = ['ESTATE_ADMIN'];
+    fake.tokenParsed['estate_ids'] = ['00000000-0000-4000-8000-000000000001', 123];
+    const auth = TestBed.inject(AuthService);
+    await auth.initialize();
+    expect(auth.estateIds()).toEqual([]);
+    expect(auth.canManageEstate('00000000-0000-4000-8000-000000000001')).toBe(false);
+    auth.clear();
+    expect(auth.estateIds()).toEqual([]);
   });
 });

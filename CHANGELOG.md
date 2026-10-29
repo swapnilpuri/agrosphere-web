@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0 — local candidate, unpublished — 2026-10-28
+
+- Add estate/division/rubber-field creation and editing through existing pinned Gateway contracts, role/scope-aware controls, observed-version conflicts and unsaved-work protection.
+- Add owner-supplied GeoJSON boundary validation, canonical mapping, explicit provenance and service-owned import-job results/status checking; keep existing geometry protected from this add-only workflow.
+- Add Gabon/Malawi guidance and a blank data-collection worksheet; actual plantation records remain pending owner details. No fabricated real data, new backend endpoints or worker/attendance implementation.
+
 ## Unreleased - 2026-10-28
 
 - Reapply the current map selection after asynchronous geometry loading completes, clearing stale missing-geometry warnings and restoring the selected camera target. Add a delayed-load regression and a live-browser assertion; retain genuine warnings for records without geometry.

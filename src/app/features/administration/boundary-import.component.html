@@ -1,0 +1,110 @@
+<section class="admin-panel" aria-label="Boundary import">
+  <h2>Import mapped boundaries</h2>
+  <p>
+    Upload your estate survey as a GeoJSON FeatureCollection, then link each polygon to an estate,
+    division or field. Coordinates must be WGS84 longitude / latitude. Up to 100 polygons and 1 MiB
+    per file.
+  </p>
+  <p>
+    This adds new boundaries. Records that already have geometry are excluded. No boundaries, areas
+    or coordinates are generated for you. KML/shapefiles must first be exported to WGS84 GeoJSON in
+    your GIS software.
+  </p>
+  <label for="boundary-file">GeoJSON boundary file</label>
+  <input
+    id="boundary-file"
+    type="file"
+    accept=".geojson,.json,application/geo+json,application/json"
+    (change)="read($event)"
+    [disabled]="store.mutating() || store.busy() || store.editingRecord() || reading() || pending()"
+  />
+  @if (reading()) {
+    <p role="status">Reading the boundary file…</p>
+  }
+  @if (error()) {
+    <p role="alert" class="error">{{ error() }}</p>
+  }
+  @if (rows().length) {
+    <h3>Preview {{ rows().length }} boundaries</h3>
+    <p>Stored source filename: {{ filename() }}. Saving records alone does not create geometry.</p>
+    <fieldset [disabled]="store.mutating()">
+      <legend class="sr-only">Boundary mapping</legend>
+      <label for="boundary-provenance">Data provenance *</label>
+      <select id="boundary-provenance" (change)="provenance.set($any($event.target).value)">
+        <option value="">Choose the source classification…</option>
+        <option value="REAL">REAL — actual plantation boundary data</option>
+        <option value="SIMULATED">SIMULATED — demonstration or test data</option>
+        <option value="ESTIMATED">ESTIMATED — approximate boundaries</option>
+        <option value="PREDICTED">PREDICTED — model-derived boundaries</option>
+      </select>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Source polygon</th>
+              <th>Map to record *</th>
+              <th>Boundary code *</th>
+              <th>Bounds (west, south, east, north)</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of rows(); track $index; let index = $index) {
+              <tr>
+                <td>{{ row.label }}<br />{{ row.geometry.type }}</td>
+                <td>
+                  <select
+                    [attr.aria-label]="'Target for boundary ' + (index + 1)"
+                    (change)="map(index, $any($event.target).value)"
+                  >
+                    <option value="">Choose a record…</option>
+                    @for (target of targets(); track target.key) {
+                      <option [value]="target.key" [selected]="row.target === target.key">
+                        {{ target.label }}
+                      </option>
+                    }
+                  </select>
+                </td>
+                <td>
+                  <input
+                    [attr.aria-label]="'Code for boundary ' + (index + 1)"
+                    [value]="row.code"
+                    maxlength="64"
+                    (input)="code(index, $any($event.target).value)"
+                  />
+                </td>
+                <td>{{ row.bounds.join(', ') }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </fieldset>
+    <div class="actions">
+      <button
+        class="primary"
+        (click)="submit()"
+        [disabled]="
+          store.mutating() || store.busy() || store.editingRecord() || pending() || !provenance()
+        "
+      >
+        {{ store.mutating() ? 'Importing…' : 'Import ' + rows().length + ' boundaries' }}</button
+      ><button (click)="clear()" [disabled]="store.mutating()">Discard preview</button>
+    </div>
+  }
+  @if (job(); as current) {
+    <div role="status" class="notice">
+      <strong>Import {{ current.status }}</strong> · {{ current.importedCount }} imported ·
+      {{ current.rejectedCount }} rejected
+      <p>Reference: {{ current.id }}</p>
+      @if (current.status === 'COMPLETED') {
+        <p>Open Digital twin to inspect the imported boundaries.</p>
+      } @else if (current.status === 'PENDING' || current.status === 'VALIDATING') {
+        <p>Check again before repeating this import if processing takes longer than expected.</p>
+        <button (click)="checkStatus()" [disabled]="store.mutating()">Check import status</button>
+      }
+    </div>
+    @for (detail of jobErrors(); track $index) {
+      <p role="alert" class="error">{{ detail }}</p>
+    }
+  }
+</section>

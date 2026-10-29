@@ -1,6 +1,6 @@
-# AgroSphere web — Milestone 2
+# AgroSphere web — Estate/GIS and plantation administration
 
-Independent Angular 21 / TypeScript 5.9 / CesiumJS application, version 0.2.0. Estate business metadata and Spatial geometry are read exclusively through the API Gateway. No service database, messaging queue, backend source dependency, cloud deployment, or operations functionality is introduced.
+Independent Angular 21 / TypeScript 5.9 / CesiumJS application, local candidate version 0.3.0 (unpublished). Estate business metadata and Spatial geometry are read exclusively through the API Gateway. No service database, messaging queue, backend source dependency, cloud deployment, or operations functionality is introduced.
 
 ## Windows PowerShell: run locally
 
@@ -112,3 +112,11 @@ See [component architecture and Cesium notes](docs/ARCHITECTURE.md), [API/auth i
 Current limits: no geometry editing/history selector, imagery raster catalog adapter, external provider credentials, surveyed tree instances, dark theme, operations, IoT streams, or predictions. A full reference-device FPS/load benchmark and licensed online provider validation remain required before claiming those acceptance targets.
 
 License remains reserved pending the existing project license decision; see LICENSE.md.
+
+## Estate and field administration
+
+Open /administration using the **Estate administration** navigation link. Platform administrators can create estates; estate administrators/managers can edit assigned estates and create/edit divisions and rubber fields. Viewers have read-only access. Backend JWT/scope checks remain authoritative. Forms preserve observed versions on edits and retain entries when a save conflicts; refresh/reopen rather than silently overwriting newer data. Status changes use existing edit APIs; no delete action is added.
+
+[Administration/onboarding guide](docs/ESTATE_ADMINISTRATION.md) covers required records and boundary mapping. A blank, header-only worksheet is available at /onboarding/plantation-data-worksheet.csv. Gabon (GA, Africa/Libreville) and Malawi (MW, Africa/Blantyre) are suggested examples; other country/timezone inputs are supported. No real plantation name, location, area or tree count has been supplied, so no real records are prepopulated. Unknown optional values remain blank/null; required field counts/areas must be gathered rather than guessed.
+
+Boundary import accepts owner-supplied WGS84 GeoJSON polygons (1–100 features, up to 1 MiB), previews coordinates and canonical record mapping, and requires an explicit provenance choice. Existing geometry is excluded from this add-only workflow. Server-side geometry validation and import job results remain authoritative. A failed atomic import retains the preview and displays its validation report. Pending jobs cannot be resubmitted and have a status-check action. This does not add workers, attendance, Operations screens, new service endpoints or real survey data.

@@ -1,0 +1,285 @@
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">PLANTATION MANAGEMENT</p>
+    <h1>Estate administration</h1>
+    <p>Create your estate, organize divisions and fields, then import their mapped boundaries.</p>
+  </div>
+  <button (click)="refresh()" [disabled]="store.mutating() || store.estateBusy()">
+    Refresh records
+  </button>
+</div>
+<p class="notice">
+  Still gathering plantation details?
+  <a href="/onboarding/plantation-data-worksheet.csv" download>Download a blank data worksheet</a>.
+  It contains column headings only. Collect confirmed names, areas, tree counts and survey sources
+  before creating records.
+</p>
+@if (message()) {
+  <p role="status" class="notice">{{ message() }}</p>
+}
+@if (error()) {
+  <p role="alert" class="error">{{ error() }}</p>
+}
+@if (cloneError()) {
+  <p role="status">{{ cloneError() }}</p>
+}
+@if (!mayWrite() && !auth.canCreateEstate()) {
+  <p class="notice">
+    Read-only access. An estate administrator or manager can maintain records within their assigned
+    estates.
+  </p>
+}
+
+@if (editor(); as edit) {
+  <section class="admin-panel editor" aria-label="Record editor">
+    <h2>{{ edit.id ? 'Edit' : 'Create' }} {{ edit.kind === 'block' ? 'field' : edit.kind }}</h2>
+    <p>
+      Enter values from your plantation records. Optional values may be left blank; unknown counts
+      are not automatically filled with zero.
+    </p>
+    <form (submit)="save($event)">
+      <fieldset [disabled]="store.mutating()">
+        <legend class="sr-only">Record details</legend>
+        <div class="form-grid">
+          @for (field of editorFields(); track field.name) {
+            <div>
+              <label [for]="'admin-' + field.name"
+                >{{ field.label }}{{ field.required ? ' *' : '' }}</label
+              >
+              @if (field.options) {
+                <select
+                  [id]="'admin-' + field.name"
+                  [name]="field.name"
+                  [required]="!!field.required"
+                >
+                  <option value="" [selected]="!edit.values[field.name]">
+                    {{ field.required ? 'Choose…' : 'Not supplied' }}
+                  </option>
+                  @for (option of field.options; track option.value) {
+                    <option
+                      [value]="option.value"
+                      [selected]="edit.values[field.name] === option.value"
+                    >
+                      {{ option.label }}
+                    </option>
+                  }
+                </select>
+              } @else {
+                <input
+                  [id]="'admin-' + field.name"
+                  [name]="field.name"
+                  [type]="field.type ?? 'text'"
+                  [value]="edit.values[field.name] ?? ''"
+                  [required]="!!field.required"
+                  [attr.min]="field.min"
+                  [attr.max]="field.max"
+                  [attr.step]="field.step"
+                  [attr.maxlength]="field.maxLength"
+                  [attr.pattern]="field.pattern"
+                />
+              }
+              @if (field.hint) {
+                <small>{{ field.hint }}</small>
+              }
+            </div>
+          }
+        </div>
+      </fieldset>
+      <div class="actions">
+        <button type="submit" class="primary" [disabled]="store.mutating()">
+          {{ store.mutating() ? 'Saving…' : 'Save record' }}</button
+        ><button type="button" (click)="cancel()" [disabled]="store.mutating()">Cancel</button>
+      </div>
+    </form>
+  </section>
+}
+
+<section class="admin-panel" aria-label="Estate records">
+  <div class="section-heading">
+    <h2>
+      Estates <span class="count">{{ store.estates().length }}</span>
+    </h2>
+    @if (auth.canCreateEstate()) {
+      <button
+        class="primary"
+        (click)="open('estate')"
+        [disabled]="store.mutating() || store.estateBusy() || store.busy()"
+      >
+        Create estate
+      </button>
+    }
+  </div>
+  <p>Select an estate here or in the header to manage its divisions and fields.</p>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Code / name</th>
+          <th>Country / timezone</th>
+          <th>Area (ha)</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (estate of store.estates(); track estate.id) {
+          <tr [class.current]="estate.id === store.estateId()">
+            <td>
+              <strong>{{ estate.estateCode }}</strong
+              ><br />{{ estate.name }}
+            </td>
+            <td>{{ estate.countryCode }}<br />{{ estate.timezone }}</td>
+            <td>
+              {{
+                estate.totalAreaHectares === null
+                  ? 'Not supplied'
+                  : (estate.totalAreaHectares | number: '1.0-4')
+              }}
+            </td>
+            <td>{{ estate.status }}</td>
+            <td>
+              <button
+                (click)="store.selectEstate(estate.id)"
+                [disabled]="store.mutating() || store.hasUnsavedChanges()"
+              >
+                {{ estate.id === store.estateId() ? 'Selected' : 'Select' }}
+              </button>
+              @if (auth.canManageEstate(estate.id)) {
+                <button
+                  (click)="open('estate', estate)"
+                  [disabled]="store.mutating() || estate.id !== store.estateId()"
+                >
+                  Edit estate
+                </button>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5">
+              No estates yet. A platform administrator can create the first estate.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+
+@if (store.estate(); as estate) {
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">SELECTED ESTATE</p>
+      <h2>{{ estate.name }}</h2>
+    </div>
+    <a routerLink="/digital-twin">Open Digital twin →</a>
+  </div>
+  @if (store.busy()) {
+    <p role="status">Loading divisions and fields…</p>
+  }
+  <section class="admin-panel" aria-label="Division records">
+    <div class="section-heading">
+      <h2>
+        Divisions <span class="count">{{ store.divisions().length }}</span>
+      </h2>
+      @if (mayWrite()) {
+        <button (click)="open('division')" [disabled]="store.mutating() || store.busy()">
+          Create division
+        </button>
+      }
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (division of store.divisions(); track division.id) {
+            <tr>
+              <td>{{ division.divisionCode }}</td>
+              <td>{{ division.name }}</td>
+              <td>{{ division.status }}</td>
+              <td>
+                @if (mayWrite()) {
+                  <button (click)="open('division', division)" [disabled]="store.mutating()">
+                    Edit division
+                  </button>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4">Create a division before adding fields.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="admin-panel" aria-label="Field records">
+    <div class="section-heading">
+      <h2>
+        Fields / plantation blocks <span class="count">{{ store.blocks().length }}</span>
+      </h2>
+      @if (mayWrite()) {
+        <button
+          (click)="open('block')"
+          [disabled]="store.mutating() || store.busy() || !store.divisions().length"
+        >
+          Create field
+        </button>
+      }
+    </div>
+    <p>
+      Fields currently support rubber. Recorded planted area and GIS-calculated area are shown
+      separately in Digital twin.
+    </p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Code / name</th>
+            <th>Division</th>
+            <th>Planted area (ha)</th>
+            <th>Planted / tappable trees</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (block of store.blocks(); track block.id) {
+            <tr>
+              <td>
+                <strong>{{ block.blockCode }}</strong
+                ><br />{{ block.name }}
+              </td>
+              <td>{{ divisionName(block.divisionId) }}</td>
+              <td>{{ block.plantedAreaHectares | number: '1.0-4' }}</td>
+              <td>{{ block.plantedTreeCount }} / {{ block.tappableTreeCount }}</td>
+              <td>{{ block.status }}</td>
+              <td>
+                @if (mayWrite()) {
+                  <button (click)="open('block', block)" [disabled]="store.mutating()">
+                    Edit field
+                  </button>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6">No fields recorded for this estate.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+  @if (mayWrite()) {
+    <agro-boundary-import />
+  }
+}

@@ -1,5 +1,34 @@
 import { test, expect } from '@playwright/test';
 test.use({ trace: 'off' });
+
+test('real Keycloak estate administration read-only review', async ({ page }) => {
+  test.skip(
+    !process.env['E2E_USERNAME'] || !process.env['E2E_PASSWORD'],
+    'Provide existing local credentials privately',
+  );
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Sign in with Keycloak' }).click();
+  await page.locator('#username').fill(process.env['E2E_USERNAME']!);
+  await page.locator('#password').fill(process.env['E2E_PASSWORD']!);
+  await page.locator('#kc-login').click();
+  await expect(page.getByRole('heading', { name: 'Your estates, connected.' })).toBeVisible();
+  await page.getByRole('link', { name: 'Estate administration' }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Estate administration', exact: true }),
+  ).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Create estate', exact: true })).toBeEnabled();
+  await expect(page.getByRole('region', { name: 'Estate records' })).toBeVisible();
+  const worksheet = await page.request.get('/onboarding/plantation-data-worksheet.csv');
+  expect(worksheet.ok()).toBe(true);
+  expect((await worksheet.text()).trim().split(/\r?\n/)).toHaveLength(1);
+  await page.getByRole('button', { name: 'Create estate', exact: true }).click();
+  await expect(page.getByLabel('Country code')).toHaveValue('');
+  await expect(page.getByLabel('Timezone')).toHaveValue('');
+  await expect(page.getByLabel('Total area')).toHaveValue('');
+  await page.screenshot({ path: 'test-results/estate-administration-live.png', fullPage: true });
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+});
 test('real Keycloak and Gateway seeded estate workflow', async ({ page }) => {
   test.skip(
     !process.env['E2E_USERNAME'] || !process.env['E2E_PASSWORD'],

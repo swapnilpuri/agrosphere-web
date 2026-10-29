@@ -34,6 +34,10 @@ export class EstateStore {
   readonly query = signal('');
   readonly busy = signal(false);
   readonly estateBusy = signal(false);
+  readonly mutating = signal(false);
+  readonly editingRecord = signal(false);
+  readonly previewingBoundaries = signal(false);
+  readonly hasUnsavedChanges = computed(() => this.editingRecord() || this.previewingBoundaries());
   readonly error = signal('');
   readonly spatialError = signal('');
   readonly detailError = signal('');
@@ -134,7 +138,7 @@ export class EstateStore {
         if (b?.estateId === this.estateId()) this.selectedBlock.set(b);
       });
   }
-  load() {
+  load(preferredId?: string) {
     this.estateBusy.set(true);
     this.error.set('');
     this.estateApi
@@ -146,7 +150,9 @@ export class EstateStore {
           this.estateBusy.set(false);
           if (estates.length)
             this.selectEstate(
-              estates.some((e) => e.id === this.estateId()) ? this.estateId() : estates[0].id,
+              estates.some((e) => e.id === (preferredId ?? this.estateId()))
+                ? (preferredId ?? this.estateId())
+                : estates[0].id,
             );
         },
         error: (e) => {

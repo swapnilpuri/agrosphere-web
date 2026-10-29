@@ -10,6 +10,9 @@
       @if (auth.canRead()) {
         <a routerLink="/dashboard" routerLinkActive="active">◫ <span>Overview</span></a
         ><a routerLink="/digital-twin" routerLinkActive="active">◎ <span>Digital twin</span></a>
+        <a routerLink="/administration" routerLinkActive="active"
+          >▤ <span>Estate administration</span></a
+        >
       }
     </nav>
     <div class="nav-foot"><span class="status-dot"></span><span>Milestone 2 · Rubber</span></div>
@@ -34,11 +37,14 @@
         /><label class="sr-only" for="estate-select">Current estate</label
         ><select
           id="estate-select"
+          [disabled]="store.mutating() || store.estateBusy() || store.hasUnsavedChanges()"
           [value]="store.estateId()"
           (change)="store.selectEstate($any($event.target).value)"
         >
           @for (e of filteredEstates(); track e.id) {
-            <option [value]="e.id">{{ e.estateCode }} · {{ e.name }}</option>
+            <option [value]="e.id" [selected]="e.id === store.estateId()">
+              {{ e.estateCode }} · {{ e.name }}
+            </option>
           } @empty {
             <option value="">No matching estates</option>
           }
@@ -50,7 +56,13 @@
     <main id="main" tabindex="-1">
       <nav class="breadcrumb" aria-label="Breadcrumb">
         <a routerLink="/dashboard">Workspace</a> /
-        {{ router.url.includes('digital-twin') ? 'Digital twin' : 'Overview' }}
+        {{
+          router.url.includes('digital-twin')
+            ? 'Digital twin'
+            : router.url.includes('administration')
+              ? 'Estate administration'
+              : 'Overview'
+        }}
         @if (store.estate()) {
           / {{ store.estate()?.estateCode }}
         }

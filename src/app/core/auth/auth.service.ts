@@ -9,6 +9,7 @@ export class AuthService {
   readonly error = signal('');
   readonly username = signal('');
   readonly roles = signal<string[]>([]);
+  readonly estateIds = signal<string[]>([]);
   private pending?: Promise<void>;
   initialize(): Promise<void> {
     return (this.pending ??= this.start());
@@ -34,6 +35,17 @@ export class AuthService {
         this.client.tokenParsed?.['preferred_username'] ?? this.client.subject ?? 'Signed-in user',
       );
       this.roles.set(this.client.realmAccess?.roles ?? []);
+      const scope: unknown = this.client.tokenParsed?.['estate_ids'];
+      this.estateIds.set(
+        Array.isArray(scope) &&
+          scope.every(
+            (id) =>
+              typeof id === 'string' &&
+              /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id),
+          )
+          ? scope
+          : [],
+      );
     } catch {
       this.error.set('Identity service unavailable. Retry signing in.');
     } finally {
@@ -43,6 +55,16 @@ export class AuthService {
   canRead(): boolean {
     return this.roles().some((r) =>
       ['PLATFORM_ADMIN', 'ESTATE_ADMIN', 'ESTATE_MANAGER', 'VIEWER'].includes(r),
+    );
+  }
+  canCreateEstate(): boolean {
+    return this.roles().includes('PLATFORM_ADMIN');
+  }
+  canManageEstate(id: string): boolean {
+    return (
+      this.canCreateEstate() ||
+      (this.roles().some((role) => ['ESTATE_ADMIN', 'ESTATE_MANAGER'].includes(role)) &&
+        this.estateIds().includes(id))
     );
   }
   async login() {
@@ -56,6 +78,7 @@ export class AuthService {
     this.client.clearToken();
     this.authenticated.set(false);
     this.roles.set([]);
+    this.estateIds.set([]);
     this.username.set('');
   }
   async token(): Promise<string> {

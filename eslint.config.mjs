@@ -4,6 +4,7 @@ export default tseslint.config(
   {
     ignores: [
       'dist/**',
+      'target/**',
       'node_modules/**',
       'src/api/**',
       '.angular/**',

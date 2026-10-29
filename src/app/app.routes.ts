@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/auth.guard';
+import { administrationLeaveGuard } from './features/administration/administration.guard';
 export const routes: Routes = [
   {
     path: 'login',
@@ -10,6 +11,14 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./layout/shell.component').then((m) => m.ShellComponent),
     children: [
+      {
+        path: 'administration',
+        canDeactivate: [administrationLeaveGuard],
+        loadComponent: () =>
+          import('./features/administration/administration.component').then(
+            (m) => m.AdministrationComponent,
+          ),
+      },
       {
         path: 'dashboard',
         loadComponent: () =>

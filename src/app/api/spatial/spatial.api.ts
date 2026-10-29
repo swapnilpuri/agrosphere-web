@@ -23,4 +23,15 @@ export class SpatialApi {
       query,
     );
   }
+  importBoundaries(body: components['schemas']['ImportInput']) {
+    return this.api.http.post<components['schemas']['ImportJob']>(
+      this.api.baseUrl + '/api/v1/spatial/imports/geojson',
+      body,
+    );
+  }
+  importJob(id: string) {
+    return this.api.get<components['schemas']['ImportJob']>(
+      '/spatial/imports/' + encodeURIComponent(id),
+    );
+  }
 }

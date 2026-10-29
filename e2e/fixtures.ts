@@ -52,7 +52,20 @@ export const features = ['ESTATE', 'DIVISION', 'BLOCK'].map((type, index) => ({
   createdAt: '2026-01-01T00:00:00Z',
   updatedAt: '2026-01-01T00:00:00Z',
 }));
-export async function mockPlatform(page: Page) {
+export async function mockPlatform(
+  page: Page,
+  roles: string[] = ['VIEWER'],
+  estateScopes: string[] = [estateId],
+) {
+  await page.route('**/config.json', (route) =>
+    route.fulfill({
+      json: {
+        apiBaseUrl: 'http://localhost:8080',
+        keycloak: { url: 'http://localhost:8180', realm: 'agrosphere', clientId: 'agrosphere-web' },
+        cesium: {},
+      },
+    }),
+  );
   let nonce = '';
   const jwt = (value: object) =>
     'eyJhbGciOiJSUzI1NiJ9.' +
@@ -98,7 +111,8 @@ export async function mockPlatform(page: Page) {
         exp: Math.floor(Date.now() / 1000) + 300,
         iat: Math.floor(Date.now() / 1000),
         nonce,
-        realm_access: { roles: ['VIEWER'] },
+        realm_access: { roles },
+        estate_ids: estateScopes,
         session_state: 'test-session',
       };
       await route.fulfill({

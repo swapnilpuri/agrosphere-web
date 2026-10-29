@@ -9,3 +9,7 @@ Use feature-oriented standalone Angular components, Signals for local state, RxJ
 Run npm.cmd ci, npm.cmd run lint, npm.cmd run format:check, npm.cmd run typecheck, npm.cmd run api:check, npm.cmd test, npm.cmd run build, npm.cmd run e2e and npm.cmd run e2e:graphics. Run browser suites sequentially. Live E2E needs the independently maintained infrastructure and private environment credentials; traces are disabled. Verify Docker packaging when the engine is available. Report executed, failed and unavailable checks honestly; never infer reference-device FPS from software WebGL smoke results.
 
 Version independently using SemVer/CHANGELOG.md. Coordinate contract changes with owning repositories; do not modify services to accommodate frontend assumptions.
+
+## Owner-authorized estate administration - 2026-10-28
+
+The owner requested estate/field administration screens and real plantation onboarding. Implement creation/editing of estates, divisions and rubber blocks plus previewed GeoJSON boundary import through existing pinned Gateway contracts and existing server authorization. Preserve current UI, private runtime configuration and unrelated staged work. Real plantation names/counts/boundaries must come from the owner; never invent or relabel simulated data as real. Workers/attendance, new backend endpoints, contract changes, production/AEO and remote Git actions remain outside this increment.

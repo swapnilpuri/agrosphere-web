@@ -5,5 +5,8 @@
     "realm": "agrosphere",
     "clientId": "agrosphere-web"
   },
-  "cesium": {}
+  "cesium": {
+    "imageryUrl": "https://api.maptiler.com/maps/satellite-v4/{z}/{x}/{y}.jpg?key=NRPcwNGwLnttfK55pE8c",
+    "attribution": "<a href=\"https://www.maptiler.com/copyright/\" target=\"_blank\">&copy; MapTiler</a> <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\">&copy; OpenStreetMap contributors</a>"
+  }
 }
