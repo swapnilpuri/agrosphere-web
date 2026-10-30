@@ -7,6 +7,14 @@
     >
     <p class="eyebrow">WORKSPACE</p>
     <nav aria-label="Main navigation">
+      @if (auth.canReadWorkforce(store.estateId())) {
+        <a routerLink="/workers" routerLinkActive="active" aria-label="Workers"
+          >♙ <span>Workers</span></a
+        >
+        <a routerLink="/attendance" routerLinkActive="active" aria-label="Attendance"
+          >☑ <span>Attendance</span></a
+        >
+      }
       @if (auth.canRead()) {
         <a routerLink="/dashboard" routerLinkActive="active">◫ <span>Overview</span></a
         ><a routerLink="/digital-twin" routerLinkActive="active">◎ <span>Digital twin</span></a>
@@ -61,7 +69,11 @@
             ? 'Digital twin'
             : router.url.includes('administration')
               ? 'Estate administration'
-              : 'Overview'
+              : router.url.includes('workers')
+                ? 'Workers'
+                : router.url.includes('attendance')
+                  ? 'Attendance'
+                  : 'Overview'
         }}
         @if (store.estate()) {
           / {{ store.estate()?.estateCode }}

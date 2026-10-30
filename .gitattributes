@@ -4,3 +4,4 @@
 *.jpg binary
 *.uasset binary
 *.umap binary
+contracts/operations.openapi.json -text

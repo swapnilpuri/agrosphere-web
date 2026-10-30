@@ -57,8 +57,36 @@ export class AuthService {
       ['PLATFORM_ADMIN', 'ESTATE_ADMIN', 'ESTATE_MANAGER', 'VIEWER'].includes(r),
     );
   }
+  canEnterWorkspace(): boolean {
+    return this.canRead() || this.estateIds().some((id) => this.canReadWorkforce(id));
+  }
   canCreateEstate(): boolean {
     return this.roles().includes('PLATFORM_ADMIN');
+  }
+  canReadWorkforce(id: string): boolean {
+    return this.workforcePermission(id, [
+      'ESTATE_ADMIN',
+      'ESTATE_MANAGER',
+      'FIELD_SUPERVISOR',
+      'AUDITOR',
+    ]);
+  }
+  canManageWorkforce(id: string): boolean {
+    return this.workforcePermission(id, ['ESTATE_ADMIN', 'ESTATE_MANAGER']);
+  }
+  canRecordWorkforce(id: string): boolean {
+    return this.workforcePermission(id, ['ESTATE_ADMIN', 'ESTATE_MANAGER', 'FIELD_SUPERVISOR']);
+  }
+  canReadWorkforceHistory(id: string): boolean {
+    return this.workforcePermission(id, ['ESTATE_ADMIN', 'ESTATE_MANAGER', 'AUDITOR']);
+  }
+  private workforcePermission(id: string, roles: string[]): boolean {
+    return (
+      this.authenticated() &&
+      !!id &&
+      (this.roles().includes('PLATFORM_ADMIN') ||
+        (this.estateIds().includes(id) && this.roles().some((role) => roles.includes(role))))
+    );
   }
   canManageEstate(id: string): boolean {
     return (
@@ -83,8 +111,22 @@ export class AuthService {
   }
   async token(): Promise<string> {
     try {
-      await this.client.updateToken(30);
+      const refreshed = await this.client.updateToken(30);
       if (!this.client.token) throw new Error('No session');
+      if (refreshed) {
+        this.roles.set(this.client.realmAccess?.roles ?? []);
+        const scope: unknown = this.client.tokenParsed?.['estate_ids'];
+        this.estateIds.set(
+          Array.isArray(scope) &&
+            scope.every(
+              (id) =>
+                typeof id === 'string' &&
+                /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id),
+            )
+            ? scope
+            : [],
+        );
+      }
       return this.client.token;
     } catch {
       this.clear();

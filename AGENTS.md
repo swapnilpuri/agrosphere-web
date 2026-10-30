@@ -13,3 +13,7 @@ Version independently using SemVer/CHANGELOG.md. Coordinate contract changes wit
 ## Owner-authorized estate administration - 2026-10-28
 
 The owner requested estate/field administration screens and real plantation onboarding. Implement creation/editing of estates, divisions and rubber blocks plus previewed GeoJSON boundary import through existing pinned Gateway contracts and existing server authorization. Preserve current UI, private runtime configuration and unrelated staged work. Real plantation names/counts/boundaries must come from the owner; never invent or relabel simulated data as real. Workers/attendance, new backend endpoints, contract changes, production/AEO and remote Git actions remain outside this increment.
+
+## Owner-authorized WA-1 — 2026-10-29
+
+The owner accepted the worker/attendance design and executable Contracts 0.6.0 candidate, authorizing WA-T01–T09. This supersedes historical worker/Operations exclusions only for the minimal SIMULATED registry and daily roll call in docs/WORKFORCE.md. Use the independent Operations pin and narrow workforce permissions. Preserve original config/index and existing features. D08 workload/rollout and D09 privacy/retention remain gates. No REAL worker data, commit/push/publish, production/destructive migration, existing-stack/private-environment or AEO change is authorized.

@@ -1,0 +1,75 @@
+:host {
+  display: block;
+  max-width: 1200px;
+}
+fieldset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: end;
+  margin: 1rem 0;
+  border: 1px solid #bdcdc4;
+  border-radius: 8px;
+  padding: 1rem;
+}
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1 1 180px;
+}
+input,
+select,
+textarea {
+  min-height: 42px;
+  max-width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #829c90;
+  border-radius: 4px;
+  background: white;
+  color: #19372b;
+}
+input[type='checkbox'] {
+  min-height: auto;
+  align-self: start;
+}
+button {
+  margin: 0.3rem;
+  min-height: 42px;
+}
+.record,
+.editor,
+.coverage {
+  border: 1px solid #bdcdc4;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 8px;
+  background: white;
+  overflow-wrap: anywhere;
+}
+.editor {
+  border: 2px solid #267153;
+}
+.scope-note,
+.coverage {
+  background: #eef6f0;
+  padding: 1rem;
+}
+h2 {
+  font-size: 1.1rem;
+}
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+@media (max-width: 600px) {
+  fieldset {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  label {
+    flex-basis: auto;
+  }
+}

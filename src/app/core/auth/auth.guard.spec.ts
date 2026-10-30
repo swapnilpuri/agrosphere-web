@@ -22,7 +22,7 @@ describe('Authentication guard', () => {
           useValue: {
             initialize: async () => {},
             authenticated: () => authenticated,
-            canRead: () => allowed,
+            canEnterWorkspace: () => allowed,
           },
         },
       ],

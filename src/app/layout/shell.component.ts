@@ -24,6 +24,7 @@ export class ShellComponent {
     effect(() => {
       if (!this.auth.authenticated()) void this.router.navigate(['/login']);
     });
+    this.store.spatialEnabled.set(this.auth.canRead());
     this.store.load();
   }
 }

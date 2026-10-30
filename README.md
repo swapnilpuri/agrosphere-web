@@ -1,5 +1,9 @@
 # AgroSphere web — Estate/GIS and plantation administration
 
+## WA-1 local status — 2026-10-29
+
+Local unpublished Web 0.4.0 adds /workers and /attendance. See [workforce guide](docs/WORKFORCE.md). Historical Milestone 2/estate-only exclusions describe earlier increments; WA-1 is explicitly approved, SIMULATED-only and independently pinned to Contracts 0.6.0.
+
 Independent Angular 21 / TypeScript 5.9 / CesiumJS application, local candidate version 0.3.0 (unpublished). Estate business metadata and Spatial geometry are read exclusively through the API Gateway. No service database, messaging queue, backend source dependency, cloud deployment, or operations functionality is introduced.
 
 ## Windows PowerShell: run locally

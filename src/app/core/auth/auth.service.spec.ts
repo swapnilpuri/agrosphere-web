@@ -20,6 +20,27 @@ vi.mock('keycloak-js', () => ({
   },
 }));
 describe('Keycloak session', () => {
+  it('applies the narrower workforce role matrix and refreshes revoked claims', async () => {
+    const id = '00000000-0000-4000-8000-000000000001';
+    const auth = TestBed.inject(AuthService);
+    await auth.initialize();
+    auth.estateIds.set([id]);
+    for (const role of ['VIEWER', 'PLANTATION_ADMIN', 'WORKER']) {
+      auth.roles.set([role]);
+      expect(auth.canReadWorkforce(id)).toBe(false);
+    }
+    auth.roles.set(['FIELD_SUPERVISOR']);
+    expect(auth.canRecordWorkforce(id)).toBe(true);
+    expect(auth.canManageWorkforce(id)).toBe(false);
+    expect(auth.canReadWorkforceHistory(id)).toBe(false);
+    expect(auth.canReadWorkforce('foreign')).toBe(false);
+    auth.roles.set(['AUDITOR']);
+    expect(auth.canReadWorkforceHistory(id)).toBe(true);
+    expect(auth.canRecordWorkforce(id)).toBe(false);
+    fake.updateToken.mockResolvedValueOnce(true);
+    await auth.token();
+    expect(auth.canReadWorkforce(id)).toBe(false);
+  });
   beforeEach(() => {
     vi.clearAllMocks();
     fake.realmAccess.roles = ['VIEWER'];

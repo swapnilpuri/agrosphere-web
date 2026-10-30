@@ -1,0 +1,330 @@
+<header class="page-heading">
+  <div>
+    <p class="eyebrow">WORKFORCE · SIMULATED</p>
+    <h1>{{ mode === 'workers' ? 'Worker registration' : 'Daily attendance' }}</h1>
+  </div>
+</header>
+<p class="scope-note">
+  Development uses simulated records only. Daily roll call records attendance evidence, not hours or
+  payroll. Do not enter actual personal data.
+</p>
+@if (error()) {
+  <div class="error" role="alert">{{ error() }}</div>
+}
+@if (notice()) {
+  <p role="status">{{ notice() }}</p>
+}
+@if (!permitted() || denied()) {
+  <p role="status">Worker information requires an authorized workforce role and estate scope.</p>
+} @else {
+  <p>
+    Estate-local today: {{ today() || 'Timezone unavailable' }} · {{ store.estate()?.timezone }}
+  </p>
+  <fieldset [disabled]="!!editor() || busy()">
+    <legend>Filters</legend>
+    @if (mode === 'workers') {
+      <label
+        >Worker code<input
+          [value]="code()"
+          (input)="code.set($any($event.target).value); invalidateFilters()"
+      /></label>
+      <label
+        >Name prefix<input
+          [value]="name()"
+          (input)="name.set($any($event.target).value); invalidateFilters()"
+      /></label>
+      <label
+        >Active on (optional)<input
+          type="date"
+          [max]="today()"
+          [value]="activeOn()"
+          (input)="activeOn.set($any($event.target).value); invalidateFilters()"
+      /></label>
+    } @else {
+      <label
+        >Attendance date<input
+          type="date"
+          [max]="today()"
+          [value]="date()"
+          (input)="date.set($any($event.target).value); invalidateFilters()"
+      /></label>
+      <label
+        ><input
+          type="checkbox"
+          [checked]="recordedOnly()"
+          (change)="recordedOnly.set($any($event.target).checked); invalidateFilters()"
+        />
+        Show recorded days, including outside the current roster</label
+      >
+    }
+    @if (!recordedOnly()) {
+      <label
+        >Current division<select
+          [value]="division()"
+          (change)="division.set($any($event.target).value); invalidateFilters()"
+        >
+          <option value="">All divisions</option>
+          @for (d of store.divisions(); track d.id) {
+            <option [value]="d.id">{{ d.name }}</option>
+          }
+        </select></label
+      >
+    }
+    <button (click)="load(0)">Apply filters</button>
+  </fieldset>
+  @if (mode === 'workers' && manager()) {
+    <button [disabled]="!!editor() || !today()" (click)="open('REGISTER')">
+      Register simulated worker
+    </button>
+  }
+  @if (busy()) {
+    <p role="status">Loading workforce records…</p>
+  }
+  @if (roster(); as r) {
+    <section aria-label="Attendance coverage" class="coverage">
+      <p>SIMULATED · {{ r.date }} · {{ r.estateTimezone }} · current division filter</p>
+      <p>
+        Eligible: {{ r.eligibleCount }} · Marked: {{ r.markedCount }} · Unmarked:
+        {{ r.unmarkedCount }} · Voided: {{ r.voidedCount }} · Recorded outside roster:
+        {{ r.outsideRosterRecordedCount }}
+      </p>
+      <p>
+        Coverage includes all matching workers before pagination. Missing evidence remains unmarked.
+      </p>
+    </section>
+    @for (row of r.content; track row.worker.id) {
+      <article class="record">
+        <h2>{{ row.worker.code }} · {{ row.worker.displayName }}</h2>
+        <p>{{ row.worker.provenance }} · {{ row.attendance?.status ?? 'UNMARKED' }}</p>
+        @if (row.attendance; as day) {
+          <button (click)="show(day)">View attendance details</button>
+          @if (manager()) {
+            @if (day.status === 'VOIDED') {
+              <button [disabled]="!!editor()" (click)="open('RERECORD', undefined, day)">
+                Re-record
+              </button>
+            } @else {
+              <button [disabled]="!!editor()" (click)="open('CORRECT', undefined, day)">
+                Correct</button
+              ><button [disabled]="!!editor()" (click)="open('VOID', undefined, day)">Void</button>
+            }
+          }
+        } @else if (canRecord()) {
+          <button
+            [disabled]="!!editor()"
+            (click)="open('RECORD', undefined, undefined, row.worker.id)"
+          >
+            Record attendance for {{ row.worker.code }}
+          </button>
+        }
+      </article>
+    }
+  }
+  @for (worker of workers(); track worker.id) {
+    <article class="record">
+      <h2>{{ worker.workerCode }} · {{ worker.displayName }}</h2>
+      <p>{{ worker.dataProvenance }} · version {{ worker.version }}</p>
+      <button (click)="show(worker)">View worker details</button>
+      @if (manager()) {
+        <button [disabled]="!!editor()" (click)="open('PROFILE', worker)">Edit profile</button>
+        @if (hasOpenPeriod(worker)) {
+          <button [disabled]="!!editor()" (click)="open('CLOSE', worker)">
+            Close active period
+          </button>
+        } @else {
+          <button [disabled]="!!editor()" (click)="open('OPEN', worker)">Open active period</button>
+        }
+      }
+    </article>
+  }
+  @for (day of days(); track day.id) {
+    <article class="record">
+      <h2>{{ day.workerCodeSnapshot }} · {{ day.attendanceDate }}</h2>
+      <p>{{ day.status }} · {{ day.dataProvenance }} · version {{ day.version }}</p>
+      <button (click)="show(day)">View attendance details</button>
+      @if (manager()) {
+        @if (day.status === 'VOIDED') {
+          <button [disabled]="!!editor()" (click)="open('RERECORD', undefined, day)">
+            Re-record
+          </button>
+        } @else {
+          <button [disabled]="!!editor()" (click)="open('CORRECT', undefined, day)">Correct</button
+          ><button [disabled]="!!editor()" (click)="open('VOID', undefined, day)">Void</button>
+        }
+      }
+    </article>
+  }
+  @if (!busy() && !total() && !error()) {
+    <p role="status">No matching simulated records.</p>
+  }
+  <nav aria-label="Workforce pages">
+    <button [disabled]="page() === 0 || busy() || !!editor()" (click)="load(page() - 1)">
+      Previous</button
+    ><span>Page {{ page() + 1 }} · {{ total() }} matching records</span
+    ><button
+      [disabled]="(page() + 1) * 20 >= total() || busy() || !!editor()"
+      (click)="load(page() + 1)"
+    >
+      Next
+    </button>
+  </nav>
+  @if (editor(); as e) {
+    <section class="editor" aria-label="Workforce draft">
+      <h2>{{ e.kind }} draft</h2>
+      <p>Estate, worker, date and observed version remain fixed for this command.</p>
+      <p>
+        {{ e.worker?.workerCode ?? e.day?.workerCodeSnapshot ?? e.workerId }}
+        {{ e.day?.attendanceDate ?? e.date }}
+        @if (e.worker || e.day) {
+          · observed version {{ e.worker?.version ?? e.day?.version }}
+        }
+      </p>
+      <fieldset [disabled]="saving() || !!pending()">
+        <legend>Command fields</legend>
+        @if (e.kind === 'REGISTER') {
+          <label
+            >Worker code<input
+              [value]="e.values['code']"
+              (input)="change('code', $any($event.target).value)"
+          /></label>
+        }
+        @if (e.kind === 'REGISTER' || e.kind === 'PROFILE') {
+          <label
+            >Display name<input
+              [value]="e.values['name']"
+              (input)="change('name', $any($event.target).value)"
+          /></label>
+          <label
+            >Assigned division<select
+              [value]="e.values['division']"
+              (change)="change('division', $any($event.target).value)"
+            >
+              <option value="">Unassigned</option>
+              @for (d of store.divisions(); track d.id) {
+                <option [value]="d.id">{{ d.name }}</option>
+              }
+            </select></label
+          >
+        }
+        @if (e.kind === 'REGISTER' || e.kind === 'OPEN' || e.kind === 'CLOSE') {
+          <label
+            >{{
+              e.kind === 'CLOSE'
+                ? 'Exclusive end date (first inactive day)'
+                : 'Active from (inclusive)'
+            }}<input
+              type="date"
+              [value]="e.values['date']"
+              (input)="change('date', $any($event.target).value)"
+          /></label>
+        }
+        @if (e.kind === 'RECORD' || e.kind === 'CORRECT' || e.kind === 'RERECORD') {
+          <label
+            >Attendance status<select
+              [value]="e.values['status']"
+              (change)="change('status', $any($event.target).value)"
+            >
+              <option value="">Choose status</option>
+              <option>PRESENT</option>
+              <option>ABSENT</option>
+              <option>EXCUSED</option>
+            </select></label
+          >
+        }
+        @if (e.kind !== 'REGISTER' && (e.kind !== 'RECORD' || e.date !== today())) {
+          <label
+            >Reason<textarea
+              [value]="e.values['reason']"
+              (input)="change('reason', $any($event.target).value)"
+            ></textarea>
+          </label>
+          <p>Required audit reason. Do not include health or other sensitive details.</p>
+        }
+      </fieldset>
+      @if (pending()) {
+        <p role="status">
+          The command is frozen for an identical retry. Inspect the latest record before discarding
+          or making another command.
+        </p>
+      }
+      <button [disabled]="saving()" (click)="save()">
+        {{ saving() ? 'Saving…' : pending() ? 'Retry same command' : 'Save command' }}</button
+      ><button [disabled]="saving()" (click)="discard()">Discard draft</button
+      ><button [disabled]="saving() || detailBusy()" (click)="inspectLatest()">
+        Inspect latest record
+      </button>
+      @if (latest(); as value) {
+        <p role="status">
+          Latest version: {{ value.version }}. Your draft still uses the original observed version.
+          Discard and reopen only after reviewing this record.
+        </p>
+        @if (asWorker(value); as w) {
+          <p>
+            {{ w.workerCode }} · {{ w.displayName }} · division {{ w.divisionId ?? 'Unassigned' }}
+          </p>
+        }
+        @if (asDay(value); as d) {
+          <p>{{ d.attendanceDate }} · {{ d.status }}</p>
+        }
+      }
+    </section>
+  }
+  @if (detail(); as record) {
+    <section class="record" aria-label="Record details">
+      <h2>Record details</h2>
+      <p>ID {{ record.id }} · version {{ record.version }} · {{ record.dataProvenance }}</p>
+      @if (asWorker(record); as worker) {
+        <p>
+          {{ worker.workerCode }} · {{ worker.displayName }} · current division
+          {{ worker.divisionId ?? 'Unassigned' }}
+        </p>
+        <h3>Active periods</h3>
+        @for (period of worker.activePeriods; track period.id) {
+          <p>{{ period.activeFrom }} inclusive → {{ period.activeTo ?? 'Open' }} exclusive</p>
+        }
+      }
+      @if (asDay(record); as day) {
+        <p>{{ day.attendanceDate }} · {{ day.estateTimezone }} · {{ day.status }}</p>
+        <p>
+          Recorded context: {{ day.workerCodeSnapshot }} · worker version
+          {{ day.workerVersionSnapshot }} · division {{ day.divisionIdSnapshot ?? 'Unassigned' }} ·
+          period {{ day.activePeriodId }}
+        </p>
+      }
+      @if (historyAllowed()) {
+        <button [disabled]="detailBusy()" (click)="showHistory()">View protected history</button>
+      }
+    </section>
+  }
+  @if (history(); as h) {
+    <section aria-label="Protected history">
+      <h2>Protected history</h2>
+      @for (entry of h.content; track entry.version) {
+        <article class="record">
+          <h3>{{ entry.commandKind }} · version {{ entry.version }}</h3>
+          <p>{{ entry.recordedAt }} · {{ entry.recordedBy }}</p>
+          <p>{{ entry.reason ?? 'Initial registration / recording' }}</p>
+          @if (asWorker(entry.snapshot); as w) {
+            <p>
+              {{ w.workerCode }} · {{ w.displayName }} · division {{ w.divisionId ?? 'Unassigned' }}
+            </p>
+          }
+          @if (asDay(entry.snapshot); as d) {
+            <p>{{ d.attendanceDate }} · {{ d.status }}</p>
+          }
+        </article>
+      }
+      <button
+        [disabled]="historyPage() === 0 || detailBusy()"
+        (click)="showHistory(historyPage() - 1)"
+      >
+        Previous history</button
+      ><button
+        [disabled]="(historyPage() + 1) * 20 >= h.totalElements || detailBusy()"
+        (click)="showHistory(historyPage() + 1)"
+      >
+        Next history
+      </button>
+    </section>
+  }
+}

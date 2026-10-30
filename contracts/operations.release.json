@@ -1,0 +1,5 @@
+{
+  "release": "0.6.0",
+  "operationsOpenapiSha256": "ce0cbf3d16c90335e0bef2f379977f7e5942d501e8f26746fc3068f1c68a6310",
+  "scope": "WA-1 workers/attendance only; all legacy Operations interfaces retained but no other Operations UI authorized"
+}

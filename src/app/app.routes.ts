@@ -11,6 +11,13 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./layout/shell.component').then((m) => m.ShellComponent),
     children: [
+      ...['workers', 'attendance'].map((path) => ({
+        path,
+        data: { workforceMode: path },
+        canDeactivate: [administrationLeaveGuard],
+        loadComponent: () =>
+          import('./features/workforce/workforce.component').then((m) => m.WorkforceComponent),
+      })),
       {
         path: 'administration',
         canDeactivate: [administrationLeaveGuard],

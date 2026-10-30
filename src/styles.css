@@ -473,7 +473,7 @@ summary {
 @media (max-width: 760px) {
   .app-shell,
   .collapsed {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .navigation {
     position: static;
@@ -482,12 +482,15 @@ summary {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
   }
   .brand {
     margin: 0;
   }
   .navigation nav {
     display: flex;
+    flex-wrap: wrap;
+    min-width: 0;
     margin: 0;
   }
   .navigation nav span {
@@ -500,6 +503,8 @@ summary {
   }
   .estate-picker {
     flex-wrap: wrap;
+    min-width: 0;
+    flex-basis: 180px;
   }
   .estate-picker input,
   .estate-picker select {

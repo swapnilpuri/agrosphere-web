@@ -5,7 +5,7 @@
   @if (auth.error()) {
     <p role="alert" class="error">{{ auth.error() }}</p>
   }
-  @if (auth.authenticated() && !auth.canRead()) {
+  @if (auth.authenticated() && !auth.canEnterWorkspace()) {
     <p role="alert">
       Your role cannot read Estate Service metadata. Ask an identity administrator for an estate
       read role. AGRONOMIST alone currently has Spatial access only.

@@ -37,7 +37,11 @@ export class EstateStore {
   readonly mutating = signal(false);
   readonly editingRecord = signal(false);
   readonly previewingBoundaries = signal(false);
-  readonly hasUnsavedChanges = computed(() => this.editingRecord() || this.previewingBoundaries());
+  readonly workforceDirty = signal(false);
+  readonly spatialEnabled = signal(true);
+  readonly hasUnsavedChanges = computed(
+    () => this.editingRecord() || this.previewingBoundaries() || this.workforceDirty(),
+  );
   readonly error = signal('');
   readonly spatialError = signal('');
   readonly detailError = signal('');
@@ -88,16 +92,18 @@ export class EstateStore {
                 return of(null);
               }),
             ),
-            spatial: forkJoin({
-              features: this.spatialApi.features(id),
-              layers: this.spatialApi.layers(id),
-              assets: this.spatialApi.assets(id),
-            }).pipe(
-              catchError((e) => {
-                this.spatialError.set(errorMessage(e));
-                return of(null);
-              }),
-            ),
+            spatial: this.spatialEnabled()
+              ? forkJoin({
+                  features: this.spatialApi.features(id),
+                  layers: this.spatialApi.layers(id),
+                  assets: this.spatialApi.assets(id),
+                }).pipe(
+                  catchError((e) => {
+                    this.spatialError.set(errorMessage(e));
+                    return of(null);
+                  }),
+                )
+              : of(null),
           }),
         ),
         takeUntilDestroyed(this.destroy),

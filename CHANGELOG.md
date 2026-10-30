@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0 — local candidate, unpublished — 2026-10-29
+
+- Add scoped workers, active periods, estate-local daily attendance, detail/history and independent Operations 0.6.0 pin/types.
+- Preserve explicit unmarked evidence, observed versions, identical retries, conflict inspection, dirty-state protection and permission-loss clearing. REAL data remains disabled in Operations.
+- Add role/date/command/browser checks, responsive navigation wrapping and public-source-only image packaging; preserve owner configuration and estate/Cesium features.
+
 ## 0.3.0 — local candidate, unpublished — 2026-10-28
 
 - Add estate/division/rubber-field creation and editing through existing pinned Gateway contracts, role/scope-aware controls, observed-version conflicts and unsaved-work protection.

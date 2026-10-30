@@ -1,6 +1,6 @@
 {
   "name": "agrosphere-web",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "engines": {
     "node": "^22.12.0 || >=24.0.0"
@@ -13,7 +13,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "api:generate": "openapi-typescript contracts/estate.openapi.json -o src/api/estate.generated.ts && openapi-typescript contracts/spatial.openapi.json -o src/api/spatial.generated.ts",
+    "api:generate": "openapi-typescript contracts/estate.openapi.json -o src/api/estate.generated.ts && openapi-typescript contracts/spatial.openapi.json -o src/api/spatial.generated.ts && openapi-typescript contracts/operations.openapi.json -o src/api/operations.generated.ts",
     "api:check": "node scripts/check-api.mjs",
     "e2e": "playwright test --project=ui",
     "e2e:graphics": "playwright test --project=graphics",
