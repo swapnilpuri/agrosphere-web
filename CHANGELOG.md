@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased — 2026-10-31 AN-1
+
+Accepted Operations 0.8.0 pins support the in-app Alerts inbox/badge/read/ack/history and scoped cancellation/retry/conflict flows. See docs/ALERTS.md and Architecture verification. Default backend alerts remain disabled pending subject policy; no live rollout, account provisioning or external notification. Existing owner public/config.json/index are preserved.
+
+## 0.5.0 - local, unpublished - 2026-10-31 II-1
+
+Add SIMULATED inspections/incidents screens, scoped role navigation, linked details/history/lifecycle, frozen retries, conflicts, dirty/session and narrow-layout protection with independent Contracts 0.7.0 types. Preserve owner config/current features; public-source image packaging. Privacy/load/REAL and existing-stack gates persist.
+
 ## 0.4.0 — local candidate, unpublished — 2026-10-29
 
 - Add scoped workers, active periods, estate-local daily attendance, detail/history and independent Operations 0.6.0 pin/types.
@@ -28,3 +36,7 @@
 ## 0.1.0
 
 Independent Milestone 0 foundation.
+
+## 0.7.0 — 2026-10-31
+
+Pins accepted Operations Contracts 0.9.0 with prior-0.8.0 archive. Alert calls use v2, canonical UUIDv7 frozen retry keys, expired read/ack/history states and explicit 410/unknown-outcome handling; no automatic replacement commands or offline persistence. Token attachment is extended only to configured-Gateway v2 alert routes. Existing public/config.json preserved.

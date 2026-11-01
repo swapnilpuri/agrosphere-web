@@ -1,0 +1,5 @@
+{
+  "release": "0.8.0",
+  "operationsOpenapiSha256": "12daf94f17e8b4fded507c1f9a27a72deb7244c9a8b20013df131e748213e937",
+  "scope": "Accepted AN-1 in-app alerts plus all prior Operations interfaces"
+}

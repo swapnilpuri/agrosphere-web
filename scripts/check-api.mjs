@@ -31,7 +31,7 @@ const operationsRelease = JSON.parse(
   await fs.readFile('contracts/operations.release.json', 'utf8'),
 );
 if (
-  operationsRelease.release !== '0.6.0' ||
+  operationsRelease.release !== '0.9.0' ||
   createHash('sha256')
     .update(await fs.readFile('contracts/operations.openapi.json'))
     .digest('hex') !== operationsRelease.operationsOpenapiSha256

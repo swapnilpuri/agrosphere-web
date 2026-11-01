@@ -1,5 +1,5 @@
 {
-  "release": "0.6.0",
-  "operationsOpenapiSha256": "ce0cbf3d16c90335e0bef2f379977f7e5942d501e8f26746fc3068f1c68a6310",
-  "scope": "WA-1 workers/attendance only; all legacy Operations interfaces retained but no other Operations UI authorized"
+  "release": "0.9.0",
+  "operationsOpenapiSha256": "f8a862a4f4d1cc397999fc5a47f763a23140eb7d72b38a4e2ec9c036315b71bc",
+  "scope": "Accepted privacy v2 extension; generated only; prior 0.8.0 archived"
 }

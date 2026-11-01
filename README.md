@@ -1,5 +1,9 @@
 # AgroSphere web — Estate/GIS and plantation administration
 
+## Web 0.5.0 local - 2026-10-31
+
+The SIMULATED inspections/incidents module is implemented with independent Contracts 0.7.0 pins. See [screen guide](docs/CROP_HEALTH.md) and Architecture INCIDENT_INSPECTION_VERIFICATION.md for actual checks/open gates. Existing data/config and workforce/administration/Cesium are preserved. No existing-stack upgrade or production publication is implied.
+
 ## WA-1 local status — 2026-10-29
 
 Local unpublished Web 0.4.0 adds /workers and /attendance. See [workforce guide](docs/WORKFORCE.md). Historical Milestone 2/estate-only exclusions describe earlier increments; WA-1 is explicitly approved, SIMULATED-only and independently pinned to Contracts 0.6.0.
@@ -124,3 +128,7 @@ Open /administration using the **Estate administration** navigation link. Platfo
 [Administration/onboarding guide](docs/ESTATE_ADMINISTRATION.md) covers required records and boundary mapping. A blank, header-only worksheet is available at /onboarding/plantation-data-worksheet.csv. Gabon (GA, Africa/Libreville) and Malawi (MW, Africa/Blantyre) are suggested examples; other country/timezone inputs are supported. No real plantation name, location, area or tree count has been supplied, so no real records are prepopulated. Unknown optional values remain blank/null; required field counts/areas must be gathered rather than guessed.
 
 Boundary import accepts owner-supplied WGS84 GeoJSON polygons (1–100 features, up to 1 MiB), previews coordinates and canonical record mapping, and requires an explicit provenance choice. Existing geometry is excluded from this add-only workflow. Server-side geometry validation and import job results remain authoritative. A failed atomic import retains the preview and displays its validation report. Pending jobs cannot be resubmitted and have a status-check action. This does not add workers, attendance, Operations screens, new service endpoints or real survey data.
+
+## AN-1 Web 0.6.0 local — 2026-10-31
+
+Accepted Operations 0.8.0 pins support the in-app Alerts inbox/badge/read/ack/history and scoped cancellation/retry/conflict flows. See docs/ALERTS.md and Architecture verification. Default backend alerts remain disabled pending subject policy; no live rollout, account provisioning or external notification. Existing owner public/config.json/index are preserved.

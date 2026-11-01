@@ -30,4 +30,34 @@ describe('Token boundary', () => {
     expect(clear).toHaveBeenCalled();
     http.verify();
   });
+  it('allows v2 alert authentication without sending tokens to other v2 or foreign routes', async () => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(withInterceptors([gatewayInterceptor])),
+        provideHttpClientTesting(),
+        { provide: CONFIG, useValue: { apiBaseUrl: 'http://gateway' } },
+        { provide: AuthService, useValue: { token: async () => 'short-token', clear: vi.fn() } },
+      ],
+    });
+    const client = TestBed.inject(HttpClient);
+    const http = TestBed.inject(HttpTestingController);
+    for (const url of ['http://gateway/api/v2/alerts', 'http://gateway/api/v2/alerts/counts']) {
+      client.get(url).subscribe();
+      await Promise.resolve();
+      const req = http.expectOne(url);
+      expect(req.request.headers.get('Authorization')).toBe('Bearer short-token');
+      req.flush({});
+    }
+    for (const url of [
+      'http://gateway/api/v2/estates',
+      'http://gateway/api/v2/alerts-extra',
+      'http://untrusted/api/v2/alerts',
+    ]) {
+      client.get(url).subscribe();
+      const req = http.expectOne(url);
+      expect(req.request.headers.has('Authorization')).toBe(false);
+      req.flush({});
+    }
+    http.verify();
+  });
 });

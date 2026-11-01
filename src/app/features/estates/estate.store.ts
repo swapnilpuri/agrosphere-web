@@ -38,9 +38,16 @@ export class EstateStore {
   readonly editingRecord = signal(false);
   readonly previewingBoundaries = signal(false);
   readonly workforceDirty = signal(false);
+  readonly cropHealthDirty = signal(false);
+  readonly alertCommandPending = signal(false);
   readonly spatialEnabled = signal(true);
   readonly hasUnsavedChanges = computed(
-    () => this.editingRecord() || this.previewingBoundaries() || this.workforceDirty(),
+    () =>
+      this.editingRecord() ||
+      this.previewingBoundaries() ||
+      this.workforceDirty() ||
+      this.cropHealthDirty() ||
+      this.alertCommandPending(),
   );
   readonly error = signal('');
   readonly spatialError = signal('');

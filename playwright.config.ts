@@ -14,7 +14,13 @@ export default defineConfig({
   projects: [
     {
       name: 'ui',
-      testMatch: ['ui.spec.ts', 'administration.spec.ts', 'workforce.spec.ts'],
+      testMatch: [
+        'ui.spec.ts',
+        'administration.spec.ts',
+        'workforce.spec.ts',
+        'crop-health.spec.ts',
+        'alerts.spec.ts',
+      ],
       use: {
         ...devices['Desktop Chrome'],
         launchOptions: { args: ['--disable-features=LocalNetworkAccessChecks', '--disable-webgl'] },

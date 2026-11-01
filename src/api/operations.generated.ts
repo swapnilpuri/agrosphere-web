@@ -572,6 +572,468 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/inspections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Validated signed sub and trusted estate_ids. PLATFORM_ADMIN globally with explicit estate on lists; scoped ESTATE_ADMIN/ESTATE_MANAGER manage; FIELD_SUPERVISOR reads current and creates estate-today only; AUDITOR reads current/history. PLANTATION_ADMIN/FIELD_WORKER/VIEWER alone grant nothing. Ordinary views omit actors/revision reasons; history manager/auditor only. Scope before query/count/link/replay. Foreign/missing object IDs uniformly 404 after feature role validation; explicit denied estate 403. All writes SIMULATED-only; REAL enablement requires separately implemented reviewed privacy policy. */
+        get: operations["listFieldInspections"];
+        put?: never;
+        /** @description Validated signed sub and trusted estate_ids. PLATFORM_ADMIN globally with explicit estate on lists; scoped ESTATE_ADMIN/ESTATE_MANAGER manage; FIELD_SUPERVISOR reads current and creates estate-today only; AUDITOR reads current/history. PLANTATION_ADMIN/FIELD_WORKER/VIEWER alone grant nothing. Ordinary views omit actors/revision reasons; history manager/auditor only. Scope before query/count/link/replay. Foreign/missing object IDs uniformly 404 after feature role validation; explicit denied estate 403. All writes SIMULATED-only; REAL enablement requires separately implemented reviewed privacy policy. UUID Idempotency-Key: feature-scoped actor/key reservation; normalize method/path/body, trim text and canonicalize times to UTC microseconds before hashing. Identical retries return original success/status/Location; different command 409. Reauthorize current operation/scope/projection before replay; permission downgrade denies replay. Unknown outcome: retry same frozen command/key. Fresh-key no-op 409. Existing roots require versions; all linked incident commands require inspectionVersion; inspection commands require incidentVersion iff linked. Reserve then lock inspection before incident; validate both versions and write root(s)/revision(s)/receipt/outbox atomically. CLEAR: no incident. FOLLOW_UP: required category/severity/summary/details, linked atomically at the inspection observedAt. Missing backdateReason on manager past-date creation is 400. */
+        post: operations["recordFieldInspection"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/inspections/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Validated signed sub and trusted estate_ids. PLATFORM_ADMIN globally with explicit estate on lists; scoped ESTATE_ADMIN/ESTATE_MANAGER manage; FIELD_SUPERVISOR reads current and creates estate-today only; AUDITOR reads current/history. PLANTATION_ADMIN/FIELD_WORKER/VIEWER alone grant nothing. Ordinary views omit actors/revision reasons; history manager/auditor only. Scope before query/count/link/replay. Foreign/missing object IDs uniformly 404 after feature role validation; explicit denied estate 403. All writes SIMULATED-only; REAL enablement requires separately implemented reviewed privacy policy. */
+        get: operations["getFieldInspection"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/inspections/{id}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Validated signed sub and trusted estate_ids. PLATFORM_ADMIN globally with explicit estate on lists; scoped ESTATE_ADMIN/ESTATE_MANAGER manage; FIELD_SUPERVISOR reads current and creates estate-today only; AUDITOR reads current/history. PLANTATION_ADMIN/FIELD_WORKER/VIEWER alone grant nothing. Ordinary views omit actors/revision reasons; history manager/auditor only. Scope before query/count/link/replay. Foreign/missing object IDs uniformly 404 after feature role validation; explicit denied estate 403. All writes SIMULATED-only; REAL enablement requires separately implemented reviewed privacy policy. */
+        get: operations["getFieldInspectionHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/inspections/{id}/corrections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Validated signed sub and trusted estate_ids. PLATFORM_ADMIN globally with explicit estate on lists; scoped ESTATE_ADMIN/ESTATE_MANAGER manage; FIELD_SUPERVISOR reads current and creates estate-today only; AUDITOR reads current/history. PLANTATION_ADMIN/FIELD_WORKER/VIEWER alone grant nothing. Ordinary views omit actors/revision reasons; history manager/auditor only. Scope before query/count/link/replay. Foreign/missing object IDs uniformly 404 after feature role validation; explicit denied estate 403. All writes SIMULATED-only; REAL enablement requires separately implemented reviewed privacy policy. UUID Idempotency-Key: feature-scoped actor/key reservation; normalize method/path/body, trim text and canonicalize times to UTC microseconds before hashing. Identical retries return original success/status/Location; different command 409. Reauthorize current operation/scope/projection before replay; permission downgrade denies replay. Unknown outcome: retry same frozen command/key. Fresh-key no-op 409. Existing roots require versions; all linked incident commands require inspectionVersion; inspection commands require incidentVersion iff linked. Reserve then lock inspection before incident; validate both versions and write root(s)/revision(s)/receipt/outbox atomically. Only RECORDED. Full observation replacement, mandatory reason. Linked incident is never edited. CLEAR->FOLLOW_UP creates first incident iff no retained link; incident input required only then. FOLLOW_UP->CLEAR requires linked VOIDED incident and retains link; never create second link. Other corrections must omit incident input. Block/identity/provenance immutable; new linked evidence revalidates active master. */
+        post: operations["correctFieldInspection"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/inspections/{id}/void": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Validated signed sub and trusted estate_ids. PLATFORM_ADMIN globally with explicit estate on lists; scoped ESTATE_ADMIN/ESTATE_MANAGER manage; FIELD_SUPERVISOR reads current and creates estate-today only; AUDITOR reads current/history. PLANTATION_ADMIN/FIELD_WORKER/VIEWER alone grant nothing. Ordinary views omit actors/revision reasons; history manager/auditor only. Scope before query/count/link/replay. Foreign/missing object IDs uniformly 404 after feature role validation; explicit denied estate 403. All writes SIMULATED-only; REAL enablement requires separately implemented reviewed privacy policy. UUID Idempotency-Key: feature-scoped actor/key reservation; normalize method/path/body, trim text and canonicalize times to UTC microseconds before hashing. Identical retries return original success/status/Location; different command 409. Reauthorize current operation/scope/projection before replay; permission downgrade denies replay. Unknown outcome: retry same frozen command/key. Fresh-key no-op 409. Existing roots require versions; all linked incident commands require inspectionVersion; inspection commands require incidentVersion iff linked. Reserve then lock inspection before incident; validate both versions and write root(s)/revision(s)/receipt/outbox atomically. Only RECORDED; linked incident must already be VOIDED; no automatic cascade. */
+        post: operations["voidFieldInspection"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/incidents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Validated signed sub and trusted estate_ids. PLATFORM_ADMIN globally with explicit estate on lists; scoped ESTATE_ADMIN/ESTATE_MANAGER manage; FIELD_SUPERVISOR reads current and creates estate-today only; AUDITOR reads current/history. PLANTATION_ADMIN/FIELD_WORKER/VIEWER alone grant nothing. Ordinary views omit actors/revision reasons; history manager/auditor only. Scope before query/count/link/replay. Foreign/missing object IDs uniformly 404 after feature role validation; explicit denied estate 403. All writes SIMULATED-only; REAL enablement requires separately implemented reviewed privacy policy. */
+        get: operations["listCropHealthIncidents"];
+        put?: never;
+        /** @description Validated signed sub and trusted estate_ids. PLATFORM_ADMIN globally with explicit estate on lists; scoped ESTATE_ADMIN/ESTATE_MANAGER manage; FIELD_SUPERVISOR reads current and creates estate-today only; AUDITOR reads current/history. PLANTATION_ADMIN/FIELD_WORKER/VIEWER alone grant nothing. Ordinary views omit actors/revision reasons; history manager/auditor only. Scope before query/count/link/replay. Foreign/missing object IDs uniformly 404 after feature role validation; explicit denied estate 403. All writes SIMULATED-only; REAL enablement requires separately implemented reviewed privacy policy. UUID Idempotency-Key: feature-scoped actor/key reservation; normalize method/path/body, trim text and canonicalize times to UTC microseconds before hashing. Identical retries return original success/status/Location; different command 409. Reauthorize current operation/scope/projection before replay; permission downgrade denies replay. Unknown outcome: retry same frozen command/key. Fresh-key no-op 409. Existing roots require versions; all linked incident commands require inspectionVersion; inspection commands require incidentVersion iff linked. Reserve then lock inspection before incident; validate both versions and write root(s)/revision(s)/receipt/outbox atomically. */
+        post: operations["reportCropHealthIncident"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/incidents/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Validated signed sub and trusted estate_ids. PLATFORM_ADMIN globally with explicit estate on lists; scoped ESTATE_ADMIN/ESTATE_MANAGER manage; FIELD_SUPERVISOR reads current and creates estate-today only; AUDITOR reads current/history. PLANTATION_ADMIN/FIELD_WORKER/VIEWER alone grant nothing. Ordinary views omit actors/revision reasons; history manager/auditor only. Scope before query/count/link/replay. Foreign/missing object IDs uniformly 404 after feature role validation; explicit denied estate 403. All writes SIMULATED-only; REAL enablement requires separately implemented reviewed privacy policy. */
+        get: operations["getCropHealthIncident"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/incidents/{id}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Validated signed sub and trusted estate_ids. PLATFORM_ADMIN globally with explicit estate on lists; scoped ESTATE_ADMIN/ESTATE_MANAGER manage; FIELD_SUPERVISOR reads current and creates estate-today only; AUDITOR reads current/history. PLANTATION_ADMIN/FIELD_WORKER/VIEWER alone grant nothing. Ordinary views omit actors/revision reasons; history manager/auditor only. Scope before query/count/link/replay. Foreign/missing object IDs uniformly 404 after feature role validation; explicit denied estate 403. All writes SIMULATED-only; REAL enablement requires separately implemented reviewed privacy policy. */
+        get: operations["getCropHealthIncidentHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/incidents/{id}/amendments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Validated signed sub and trusted estate_ids. PLATFORM_ADMIN globally with explicit estate on lists; scoped ESTATE_ADMIN/ESTATE_MANAGER manage; FIELD_SUPERVISOR reads current and creates estate-today only; AUDITOR reads current/history. PLANTATION_ADMIN/FIELD_WORKER/VIEWER alone grant nothing. Ordinary views omit actors/revision reasons; history manager/auditor only. Scope before query/count/link/replay. Foreign/missing object IDs uniformly 404 after feature role validation; explicit denied estate 403. All writes SIMULATED-only; REAL enablement requires separately implemented reviewed privacy policy. UUID Idempotency-Key: feature-scoped actor/key reservation; normalize method/path/body, trim text and canonicalize times to UTC microseconds before hashing. Identical retries return original success/status/Location; different command 409. Reauthorize current operation/scope/projection before replay; permission downgrade denies replay. Unknown outcome: retry same frozen command/key. Fresh-key no-op 409. Existing roots require versions; all linked incident commands require inspectionVersion; inspection commands require incidentVersion iff linked. Reserve then lock inspection before incident; validate both versions and write root(s)/revision(s)/receipt/outbox atomically. Only OPEN/IN_REVIEW; full mutable report replacement, no status/identity/link edits. */
+        post: operations["amendCropHealthIncident"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/incidents/{id}/triage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Validated signed sub and trusted estate_ids. PLATFORM_ADMIN globally with explicit estate on lists; scoped ESTATE_ADMIN/ESTATE_MANAGER manage; FIELD_SUPERVISOR reads current and creates estate-today only; AUDITOR reads current/history. PLANTATION_ADMIN/FIELD_WORKER/VIEWER alone grant nothing. Ordinary views omit actors/revision reasons; history manager/auditor only. Scope before query/count/link/replay. Foreign/missing object IDs uniformly 404 after feature role validation; explicit denied estate 403. All writes SIMULATED-only; REAL enablement requires separately implemented reviewed privacy policy. UUID Idempotency-Key: feature-scoped actor/key reservation; normalize method/path/body, trim text and canonicalize times to UTC microseconds before hashing. Identical retries return original success/status/Location; different command 409. Reauthorize current operation/scope/projection before replay; permission downgrade denies replay. Unknown outcome: retry same frozen command/key. Fresh-key no-op 409. Existing roots require versions; all linked incident commands require inspectionVersion; inspection commands require incidentVersion iff linked. Reserve then lock inspection before incident; validate both versions and write root(s)/revision(s)/receipt/outbox atomically. OPEN->IN_REVIEW only. */
+        post: operations["triageCropHealthIncident"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/incidents/{id}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Validated signed sub and trusted estate_ids. PLATFORM_ADMIN globally with explicit estate on lists; scoped ESTATE_ADMIN/ESTATE_MANAGER manage; FIELD_SUPERVISOR reads current and creates estate-today only; AUDITOR reads current/history. PLANTATION_ADMIN/FIELD_WORKER/VIEWER alone grant nothing. Ordinary views omit actors/revision reasons; history manager/auditor only. Scope before query/count/link/replay. Foreign/missing object IDs uniformly 404 after feature role validation; explicit denied estate 403. All writes SIMULATED-only; REAL enablement requires separately implemented reviewed privacy policy. UUID Idempotency-Key: feature-scoped actor/key reservation; normalize method/path/body, trim text and canonicalize times to UTC microseconds before hashing. Identical retries return original success/status/Location; different command 409. Reauthorize current operation/scope/projection before replay; permission downgrade denies replay. Unknown outcome: retry same frozen command/key. Fresh-key no-op 409. Existing roots require versions; all linked incident commands require inspectionVersion; inspection commands require incidentVersion iff linked. Reserve then lock inspection before incident; validate both versions and write root(s)/revision(s)/receipt/outbox atomically. OPEN/IN_REVIEW->RESOLVED; observedAt<=resolvedAt<=now, resolution note required. */
+        post: operations["resolveCropHealthIncident"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/incidents/{id}/reopen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Validated signed sub and trusted estate_ids. PLATFORM_ADMIN globally with explicit estate on lists; scoped ESTATE_ADMIN/ESTATE_MANAGER manage; FIELD_SUPERVISOR reads current and creates estate-today only; AUDITOR reads current/history. PLANTATION_ADMIN/FIELD_WORKER/VIEWER alone grant nothing. Ordinary views omit actors/revision reasons; history manager/auditor only. Scope before query/count/link/replay. Foreign/missing object IDs uniformly 404 after feature role validation; explicit denied estate 403. All writes SIMULATED-only; REAL enablement requires separately implemented reviewed privacy policy. UUID Idempotency-Key: feature-scoped actor/key reservation; normalize method/path/body, trim text and canonicalize times to UTC microseconds before hashing. Identical retries return original success/status/Location; different command 409. Reauthorize current operation/scope/projection before replay; permission downgrade denies replay. Unknown outcome: retry same frozen command/key. Fresh-key no-op 409. Existing roots require versions; all linked incident commands require inspectionVersion; inspection commands require incidentVersion iff linked. Reserve then lock inspection before incident; validate both versions and write root(s)/revision(s)/receipt/outbox atomically. RESOLVED->OPEN; clear current resolution fields, retain historical evidence. */
+        post: operations["reopenCropHealthIncident"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/incidents/{id}/void": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Validated signed sub and trusted estate_ids. PLATFORM_ADMIN globally with explicit estate on lists; scoped ESTATE_ADMIN/ESTATE_MANAGER manage; FIELD_SUPERVISOR reads current and creates estate-today only; AUDITOR reads current/history. PLANTATION_ADMIN/FIELD_WORKER/VIEWER alone grant nothing. Ordinary views omit actors/revision reasons; history manager/auditor only. Scope before query/count/link/replay. Foreign/missing object IDs uniformly 404 after feature role validation; explicit denied estate 403. All writes SIMULATED-only; REAL enablement requires separately implemented reviewed privacy policy. UUID Idempotency-Key: feature-scoped actor/key reservation; normalize method/path/body, trim text and canonicalize times to UTC microseconds before hashing. Identical retries return original success/status/Location; different command 409. Reauthorize current operation/scope/projection before replay; permission downgrade denies replay. Unknown outcome: retry same frozen command/key. Fresh-key no-op 409. Existing roots require versions; all linked incident commands require inspectionVersion; inspection commands require incidentVersion iff linked. Reserve then lock inspection before incident; validate both versions and write root(s)/revision(s)/receipt/outbox atomically. Any nonvoided->VOIDED terminal; retain resolution metadata if previously resolved; inspection not automatically voided. */
+        post: operations["voidCropHealthIncident"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/incidents/{id}/corrections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Validated signed sub and trusted estate_ids. PLATFORM_ADMIN globally with explicit estate on lists; scoped ESTATE_ADMIN/ESTATE_MANAGER manage; FIELD_SUPERVISOR reads current and creates estate-today only; AUDITOR reads current/history. PLANTATION_ADMIN/FIELD_WORKER/VIEWER alone grant nothing. Ordinary views omit actors/revision reasons; history manager/auditor only. Scope before query/count/link/replay. Foreign/missing object IDs uniformly 404 after feature role validation; explicit denied estate 403. All writes SIMULATED-only; REAL enablement requires separately implemented reviewed privacy policy. UUID Idempotency-Key: feature-scoped actor/key reservation; normalize method/path/body, trim text and canonicalize times to UTC microseconds before hashing. Identical retries return original success/status/Location; different command 409. Reauthorize current operation/scope/projection before replay; permission downgrade denies replay. Unknown outcome: retry same frozen command/key. Fresh-key no-op 409. Existing roots require versions; all linked incident commands require inspectionVersion; inspection commands require incidentVersion iff linked. Reserve then lock inspection before incident; validate both versions and write root(s)/revision(s)/receipt/outbox atomically. OPEN/IN_REVIEW/RESOLVED only; full report replacement; preserve lifecycle, link and all retained resolution chronology. */
+        post: operations["correctCropHealthIncident"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/alerts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @deprecated
+         * @description Independently validated issuer/audience/sub/roles/trusted estate_ids. PLATFORM_ADMIN with explicit estate selection; estate-scoped ESTATE_ADMIN/ESTATE_MANAGER read/manage/history; FIELD_SUPERVISOR read and own-read only; AUDITOR read/own-read/history. Other roles alone grant nothing. Scope before queries/counts/history/replay; explicit denied estate 403, missing/foreign object 404 after feature-role check. Ordinary responses omit source report text, ack actor and other users read markers. SIMULATED only; generated-only development until AN-D07 policy implemented. No implicit read on GET; no external/targeted delivery or absent-user guarantee. No historical backfill. Rule CROP_HEALTH_HIGH_V1: SIMULATED + OPEN/IN_REVIEW + HIGH/CRITICAL; qualification/requalification or HIGH-to-CRITICAL starts new attention. Same-severity edits/triage and CRITICAL-to-HIGH retain attention. Local source transaction owns source revision/outbox/receipt and rule state; broker delivery is independent.
+         */
+        get: operations["listCropHealthAlerts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/alerts/counts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @deprecated
+         * @description Independently validated issuer/audience/sub/roles/trusted estate_ids. PLATFORM_ADMIN with explicit estate selection; estate-scoped ESTATE_ADMIN/ESTATE_MANAGER read/manage/history; FIELD_SUPERVISOR read and own-read only; AUDITOR read/own-read/history. Other roles alone grant nothing. Scope before queries/counts/history/replay; explicit denied estate 403, missing/foreign object 404 after feature-role check. Ordinary responses omit source report text, ack actor and other users read markers. SIMULATED only; generated-only development until AN-D07 policy implemented. No implicit read on GET; no external/targeted delivery or absent-user guarantee. No historical backfill. Rule CROP_HEALTH_HIGH_V1: SIMULATED + OPEN/IN_REVIEW + HIGH/CRITICAL; qualification/requalification or HIGH-to-CRITICAL starts new attention. Same-severity edits/triage and CRITICAL-to-HIGH retain attention. Local source transaction owns source revision/outbox/receipt and rule state; broker delivery is independent.
+         */
+        get: operations["countCropHealthAlerts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/alerts/{alertId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @deprecated
+         * @description Independently validated issuer/audience/sub/roles/trusted estate_ids. PLATFORM_ADMIN with explicit estate selection; estate-scoped ESTATE_ADMIN/ESTATE_MANAGER read/manage/history; FIELD_SUPERVISOR read and own-read only; AUDITOR read/own-read/history. Other roles alone grant nothing. Scope before queries/counts/history/replay; explicit denied estate 403, missing/foreign object 404 after feature-role check. Ordinary responses omit source report text, ack actor and other users read markers. SIMULATED only; generated-only development until AN-D07 policy implemented. No implicit read on GET; no external/targeted delivery or absent-user guarantee. No historical backfill. Rule CROP_HEALTH_HIGH_V1: SIMULATED + OPEN/IN_REVIEW + HIGH/CRITICAL; qualification/requalification or HIGH-to-CRITICAL starts new attention. Same-severity edits/triage and CRITICAL-to-HIGH retain attention. Local source transaction owns source revision/outbox/receipt and rule state; broker delivery is independent.
+         */
+        get: operations["getCropHealthAlert"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/alerts/{alertId}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @deprecated
+         * @description Independently validated issuer/audience/sub/roles/trusted estate_ids. PLATFORM_ADMIN with explicit estate selection; estate-scoped ESTATE_ADMIN/ESTATE_MANAGER read/manage/history; FIELD_SUPERVISOR read and own-read only; AUDITOR read/own-read/history. Other roles alone grant nothing. Scope before queries/counts/history/replay; explicit denied estate 403, missing/foreign object 404 after feature-role check. Ordinary responses omit source report text, ack actor and other users read markers. SIMULATED only; generated-only development until AN-D07 policy implemented. No implicit read on GET; no external/targeted delivery or absent-user guarantee. No historical backfill. Rule CROP_HEALTH_HIGH_V1: SIMULATED + OPEN/IN_REVIEW + HIGH/CRITICAL; qualification/requalification or HIGH-to-CRITICAL starts new attention. Same-severity edits/triage and CRITICAL-to-HIGH retain attention. Local source transaction owns source revision/outbox/receipt and rule state; broker delivery is independent. UUID Idempotency-Key scoped to trusted issuer/opaque signed subject and alert feature. Normalize method/path/closed integer body with canonical UUID; preserve opaque identity, canonical JSON integers. Identical retry replays original 200 response after current permission/scope validation; different path/body conflicts 409. Lock alert before alert-specific rows; no source lock acquired afterward. Failed command saves no success receipt. Retry unknown outcome with identical frozen key/body. attentionVersion must equal current; update only caller monotonic marker. Already read with a fresh key succeeds without duplicate effect. Does not change shared alertVersion or acknowledge. Inactive alerts may be read.
+         */
+        post: operations["readCropHealthAlert"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/alerts/{alertId}/acknowledgements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @deprecated
+         * @description Independently validated issuer/audience/sub/roles/trusted estate_ids. PLATFORM_ADMIN with explicit estate selection; estate-scoped ESTATE_ADMIN/ESTATE_MANAGER read/manage/history; FIELD_SUPERVISOR read and own-read only; AUDITOR read/own-read/history. Other roles alone grant nothing. Scope before queries/counts/history/replay; explicit denied estate 403, missing/foreign object 404 after feature-role check. Ordinary responses omit source report text, ack actor and other users read markers. SIMULATED only; generated-only development until AN-D07 policy implemented. No implicit read on GET; no external/targeted delivery or absent-user guarantee. No historical backfill. Rule CROP_HEALTH_HIGH_V1: SIMULATED + OPEN/IN_REVIEW + HIGH/CRITICAL; qualification/requalification or HIGH-to-CRITICAL starts new attention. Same-severity edits/triage and CRITICAL-to-HIGH retain attention. Local source transaction owns source revision/outbox/receipt and rule state; broker delivery is independent. UUID Idempotency-Key scoped to trusted issuer/opaque signed subject and alert feature. Normalize method/path/closed integer body with canonical UUID; preserve opaque identity, canonical JSON integers. Identical retry replays original 200 response after current permission/scope validation; different path/body conflicts 409. Lock alert before alert-specific rows; no source lock acquired afterward. Failed command saves no success receipt. Retry unknown outcome with identical frozen key/body. ACTIVE manager only; both displayed versions must match; first acknowledgement for attention only. Atomically increment alertVersion, shared acknowledgement/evidence, own-read and receipt. Source lifecycle unchanged. A different manager/key after first acknowledgement conflicts, even at latest alertVersion.
+         */
+        post: operations["acknowledgeCropHealthAlert"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/alerts/{alertId}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @deprecated
+         * @description Independently validated issuer/audience/sub/roles/trusted estate_ids. PLATFORM_ADMIN with explicit estate selection; estate-scoped ESTATE_ADMIN/ESTATE_MANAGER read/manage/history; FIELD_SUPERVISOR read and own-read only; AUDITOR read/own-read/history. Other roles alone grant nothing. Scope before queries/counts/history/replay; explicit denied estate 403, missing/foreign object 404 after feature-role check. Ordinary responses omit source report text, ack actor and other users read markers. SIMULATED only; generated-only development until AN-D07 policy implemented. No implicit read on GET; no external/targeted delivery or absent-user guarantee. No historical backfill. Rule CROP_HEALTH_HIGH_V1: SIMULATED + OPEN/IN_REVIEW + HIGH/CRITICAL; qualification/requalification or HIGH-to-CRITICAL starts new attention. Same-severity edits/triage and CRITICAL-to-HIGH retain attention. Local source transaction owns source revision/outbox/receipt and rule state; broker delivery is independent.
+         */
+        get: operations["getCropHealthAlertHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/alerts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description AN privacy v2 candidate. Positive role/estate matrix and SIMULATED/generated-only gate retained. Privacy storage only; never fall back to v1. Logical expiry uses one server UTC decision time. All current authorization/scope checks precede receipt replay. No client-supplied identities. UUIDv7 key time is an admission bound, not a trusted completion time. New key must be within five minutes of server time; known live key/body replays exact success only before its deadline. Key time plus 30 days is an absolute upper bound; first completion plus 30 days and any personal copy expiry can shorten it. Expired/absent-old keys return 410, never execute again. Unknown recent keys outside the five-minute admission window return 409; never treat them as new. Inactive read retention expiry returns 410; GET expiry does not mark read. History expiration is explicit and cannot be undone by reopening. No external delivery, offline queue or new event. Normative candidate behavior is in semantics.json and Architecture privacy extension review. */
+        get: operations["listCropHealthAlertsPrivacyV2"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/alerts/counts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description AN privacy v2 candidate. Positive role/estate matrix and SIMULATED/generated-only gate retained. Privacy storage only; never fall back to v1. Logical expiry uses one server UTC decision time. All current authorization/scope checks precede receipt replay. No client-supplied identities. UUIDv7 key time is an admission bound, not a trusted completion time. New key must be within five minutes of server time; known live key/body replays exact success only before its deadline. Key time plus 30 days is an absolute upper bound; first completion plus 30 days and any personal copy expiry can shorten it. Expired/absent-old keys return 410, never execute again. Unknown recent keys outside the five-minute admission window return 409; never treat them as new. Inactive read retention expiry returns 410; GET expiry does not mark read. History expiration is explicit and cannot be undone by reopening. No external delivery, offline queue or new event. Normative candidate behavior is in semantics.json and Architecture privacy extension review. */
+        get: operations["countCropHealthAlertsPrivacyV2"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/alerts/{alertId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description AN privacy v2 candidate. Positive role/estate matrix and SIMULATED/generated-only gate retained. Privacy storage only; never fall back to v1. Logical expiry uses one server UTC decision time. All current authorization/scope checks precede receipt replay. No client-supplied identities. UUIDv7 key time is an admission bound, not a trusted completion time. New key must be within five minutes of server time; known live key/body replays exact success only before its deadline. Key time plus 30 days is an absolute upper bound; first completion plus 30 days and any personal copy expiry can shorten it. Expired/absent-old keys return 410, never execute again. Unknown recent keys outside the five-minute admission window return 409; never treat them as new. Inactive read retention expiry returns 410; GET expiry does not mark read. History expiration is explicit and cannot be undone by reopening. No external delivery, offline queue or new event. Normative candidate behavior is in semantics.json and Architecture privacy extension review. */
+        get: operations["getCropHealthAlertPrivacyV2"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/alerts/{alertId}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description AN privacy v2 candidate. Positive role/estate matrix and SIMULATED/generated-only gate retained. Privacy storage only; never fall back to v1. Logical expiry uses one server UTC decision time. All current authorization/scope checks precede receipt replay. No client-supplied identities. UUIDv7 key time is an admission bound, not a trusted completion time. New key must be within five minutes of server time; known live key/body replays exact success only before its deadline. Key time plus 30 days is an absolute upper bound; first completion plus 30 days and any personal copy expiry can shorten it. Expired/absent-old keys return 410, never execute again. Unknown recent keys outside the five-minute admission window return 409; never treat them as new. Inactive read retention expiry returns 410; GET expiry does not mark read. History expiration is explicit and cannot be undone by reopening. No external delivery, offline queue or new event. Normative candidate behavior is in semantics.json and Architecture privacy extension review. */
+        post: operations["readCropHealthAlertPrivacyV2"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/alerts/{alertId}/acknowledgements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description AN privacy v2 candidate. Positive role/estate matrix and SIMULATED/generated-only gate retained. Privacy storage only; never fall back to v1. Logical expiry uses one server UTC decision time. All current authorization/scope checks precede receipt replay. No client-supplied identities. UUIDv7 key time is an admission bound, not a trusted completion time. New key must be within five minutes of server time; known live key/body replays exact success only before its deadline. Key time plus 30 days is an absolute upper bound; first completion plus 30 days and any personal copy expiry can shorten it. Expired/absent-old keys return 410, never execute again. Unknown recent keys outside the five-minute admission window return 409; never treat them as new. Inactive read retention expiry returns 410; GET expiry does not mark read. History expiration is explicit and cannot be undone by reopening. No external delivery, offline queue or new event. Normative candidate behavior is in semantics.json and Architecture privacy extension review. */
+        post: operations["acknowledgeCropHealthAlertPrivacyV2"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/alerts/{alertId}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description AN privacy v2 candidate. Positive role/estate matrix and SIMULATED/generated-only gate retained. Privacy storage only; never fall back to v1. Logical expiry uses one server UTC decision time. All current authorization/scope checks precede receipt replay. No client-supplied identities. UUIDv7 key time is an admission bound, not a trusted completion time. New key must be within five minutes of server time; known live key/body replays exact success only before its deadline. Key time plus 30 days is an absolute upper bound; first completion plus 30 days and any personal copy expiry can shorten it. Expired/absent-old keys return 410, never execute again. Unknown recent keys outside the five-minute admission window return 409; never treat them as new. Inactive read retention expiry returns 410; GET expiry does not mark read. History expiration is explicit and cannot be undone by reopening. No external delivery, offline queue or new event. Normative candidate behavior is in semantics.json and Architecture privacy extension review. */
+        get: operations["getCropHealthAlertHistoryPrivacyV2"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1175,6 +1637,475 @@ export interface components {
             voidedCount: number;
             /** Format: int64 */
             outsideRosterRecordedCount: number;
+        };
+        CHInspectionView: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            estateId: string;
+            /** Format: uuid */
+            blockId: string;
+            /** @constant */
+            dataProvenance: "SIMULATED";
+            /** Format: date-time */
+            observedAt: string;
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            estateTimezone: string;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            findings: string;
+            /** @enum {string} */
+            outcome: "CLEAR" | "FOLLOW_UP";
+            /** @enum {string} */
+            state: "RECORDED" | "VOIDED";
+            linkedIncidentId: string | null;
+            linkedIncidentStatus: ("OPEN" | "IN_REVIEW" | "RESOLVED" | "VOIDED") | null;
+            linkedIncidentVersion: number | null;
+        };
+        CHIncidentView: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            estateId: string;
+            /** Format: uuid */
+            blockId: string;
+            /** @constant */
+            dataProvenance: "SIMULATED";
+            /** Format: date-time */
+            observedAt: string;
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            estateTimezone: string;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            inspectionId: string | null;
+            /** @enum {string} */
+            category: "PEST_SIGNS" | "DISEASE_SIGNS" | "TREE_DAMAGE" | "OTHER_CROP_HEALTH";
+            /** @enum {string} */
+            severity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            summary: string;
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            details: string;
+            /** @enum {string} */
+            status: "OPEN" | "IN_REVIEW" | "RESOLVED" | "VOIDED";
+            resolvedAt: string | null;
+            resolutionNote: string | null;
+        };
+        CHInspectionSnapshot: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            estateId: string;
+            /** Format: uuid */
+            blockId: string;
+            /** @constant */
+            dataProvenance: "SIMULATED";
+            /** Format: date-time */
+            observedAt: string;
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            estateTimezone: string;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            findings: string;
+            /** @enum {string} */
+            outcome: "CLEAR" | "FOLLOW_UP";
+            /** @enum {string} */
+            state: "RECORDED" | "VOIDED";
+            linkedIncidentId: string | null;
+        };
+        CHInspectionCreateResult: {
+            inspection: components["schemas"]["CHInspectionView"];
+            incident: components["schemas"]["CHIncidentView"] | null;
+        };
+        CHInspectionRecord: {
+            /** Format: uuid */
+            estateId: string;
+            /** Format: uuid */
+            blockId: string;
+            /** @constant */
+            dataProvenance: "SIMULATED";
+            /** Format: date-time */
+            observedAt: string;
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            findings: string;
+            /** @enum {string} */
+            outcome: "CLEAR" | "FOLLOW_UP";
+            incident?: {
+                /** @enum {string} */
+                category: "PEST_SIGNS" | "DISEASE_SIGNS" | "TREE_DAMAGE" | "OTHER_CROP_HEALTH";
+                /** @enum {string} */
+                severity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+                /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+                summary: string;
+                /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+                details: string;
+            };
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            backdateReason?: string;
+        } & ({
+            /** @constant */
+            outcome?: "CLEAR";
+        } | {
+            /** @constant */
+            outcome?: "FOLLOW_UP";
+        });
+        CHIncidentReport: {
+            /** Format: uuid */
+            estateId: string;
+            /** Format: uuid */
+            blockId: string;
+            /** @constant */
+            dataProvenance: "SIMULATED";
+            /** Format: date-time */
+            observedAt: string;
+            /** @enum {string} */
+            category: "PEST_SIGNS" | "DISEASE_SIGNS" | "TREE_DAMAGE" | "OTHER_CROP_HEALTH";
+            /** @enum {string} */
+            severity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            summary: string;
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            details: string;
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            backdateReason?: string;
+        };
+        CHInspectionCorrect: {
+            /** Format: int64 */
+            inspectionVersion: number;
+            /** Format: int64 */
+            incidentVersion?: number;
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            reason: string;
+            /** Format: date-time */
+            observedAt: string;
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            findings: string;
+            /** @enum {string} */
+            outcome: "CLEAR" | "FOLLOW_UP";
+            incident?: {
+                /** @enum {string} */
+                category: "PEST_SIGNS" | "DISEASE_SIGNS" | "TREE_DAMAGE" | "OTHER_CROP_HEALTH";
+                /** @enum {string} */
+                severity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+                /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+                summary: string;
+                /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+                details: string;
+            };
+        };
+        CHInspectionVoid: {
+            /** Format: int64 */
+            inspectionVersion: number;
+            /** Format: int64 */
+            incidentVersion?: number;
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            reason: string;
+        };
+        CHIncidentEdit: {
+            /** Format: int64 */
+            expectedVersion: number;
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            reason: string;
+            /** Format: int64 */
+            inspectionVersion?: number;
+            /** Format: date-time */
+            observedAt: string;
+            /** @enum {string} */
+            category: "PEST_SIGNS" | "DISEASE_SIGNS" | "TREE_DAMAGE" | "OTHER_CROP_HEALTH";
+            /** @enum {string} */
+            severity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            summary: string;
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            details: string;
+        };
+        CHIncidentAction: {
+            /** Format: int64 */
+            expectedVersion: number;
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            reason: string;
+            /** Format: int64 */
+            inspectionVersion?: number;
+        };
+        CHIncidentResolve: {
+            /** Format: int64 */
+            expectedVersion: number;
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            reason: string;
+            /** Format: int64 */
+            inspectionVersion?: number;
+            /** Format: date-time */
+            resolvedAt: string;
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            resolutionNote: string;
+        };
+        CHInspectionPage: {
+            content: components["schemas"]["CHInspectionView"][];
+            page: number;
+            size: number;
+            /** Format: int64 */
+            totalElements: number;
+        };
+        CHInspectionHistoryEntry: {
+            /** Format: uuid */
+            id: string;
+            /** Format: int64 */
+            version: number;
+            previousVersion: number | null;
+            /** @enum {string} */
+            commandKind: "RECORD" | "CORRECT" | "VOID";
+            reason: string | null;
+            /** Format: date-time */
+            recordedAt: string;
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            recordedBy: string;
+            /** Format: uuid */
+            correlationId: string;
+            snapshot: components["schemas"]["CHInspectionSnapshot"];
+        };
+        CHInspectionHistoryPage: {
+            content: components["schemas"]["CHInspectionHistoryEntry"][];
+            page: number;
+            size: number;
+            /** Format: int64 */
+            totalElements: number;
+        };
+        CHIncidentPage: {
+            content: components["schemas"]["CHIncidentView"][];
+            page: number;
+            size: number;
+            /** Format: int64 */
+            totalElements: number;
+        };
+        CHIncidentHistoryEntry: {
+            /** Format: uuid */
+            id: string;
+            /** Format: int64 */
+            version: number;
+            previousVersion: number | null;
+            /** @enum {string} */
+            commandKind: "REPORT" | "AMEND" | "TRIAGE" | "RESOLVE" | "REOPEN" | "VOID" | "CORRECT";
+            reason: string | null;
+            /** Format: date-time */
+            recordedAt: string;
+            /** @description Unicode; trim surrounding whitespace before validation and command hashing. No controls or personal information. */
+            recordedBy: string;
+            /** Format: uuid */
+            correlationId: string;
+            snapshot: components["schemas"]["CHIncidentView"];
+        };
+        CHIncidentHistoryPage: {
+            content: components["schemas"]["CHIncidentHistoryEntry"][];
+            page: number;
+            size: number;
+            /** Format: int64 */
+            totalElements: number;
+        };
+        ANRead: {
+            /** Format: int64 */
+            attentionVersion: number;
+        };
+        ANAcknowledge: {
+            /** Format: int64 */
+            expectedAlertVersion: number;
+            /** Format: int64 */
+            attentionVersion: number;
+        };
+        ANAlertView: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            incidentId: string;
+            /** Format: uuid */
+            estateId: string;
+            /** Format: uuid */
+            blockId: string;
+            /** @constant */
+            ruleVersion: "CROP_HEALTH_HIGH_V1";
+            /** Format: int64 */
+            sourceVersion: number;
+            /** Format: int64 */
+            alertVersion: number;
+            /** Format: int64 */
+            attentionVersion: number;
+            /** @enum {string} */
+            state: "ACTIVE" | "INACTIVE";
+            inactiveReason: ("RESOLVED" | "VOIDED" | "BELOW_THRESHOLD") | null;
+            /** @enum {string} */
+            category: "PEST_SIGNS" | "DISEASE_SIGNS" | "TREE_DAMAGE" | "OTHER_CROP_HEALTH";
+            /** @enum {string} */
+            severity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+            /** @enum {string} */
+            incidentStatus: "OPEN" | "IN_REVIEW" | "RESOLVED" | "VOIDED";
+            /** @constant */
+            dataProvenance: "SIMULATED";
+            estateTimezone: string;
+            /** Format: date-time */
+            observedAt: string;
+            /** Format: date-time */
+            raisedAt: string;
+            /** Format: date-time */
+            attentionAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: int64 */
+            readAttentionVersion: number;
+            readAt: string | null;
+            unreadForMe: boolean;
+            acknowledged: boolean;
+            acknowledgedAt: string | null;
+        };
+        ANAlertPage: {
+            content: components["schemas"]["ANAlertView"][];
+            page: number;
+            size: number;
+            /** Format: int64 */
+            totalElements: number;
+            /** Format: date-time */
+            generatedAt: string;
+        };
+        ANCounts: {
+            /** Format: int64 */
+            activeTotal: number;
+            /** Format: int64 */
+            activeUnreadForMe: number;
+            /** Format: int64 */
+            activeUnacknowledged: number;
+            /** Format: date-time */
+            generatedAt: string;
+        };
+        ANHistoryEntry: {
+            /** Format: uuid */
+            alertId: string;
+            /** Format: int64 */
+            alertVersion: number;
+            /** Format: int64 */
+            sourceVersion: number;
+            /** Format: int64 */
+            attentionVersion: number;
+            /** @constant */
+            ruleVersion: "CROP_HEALTH_HIGH_V1";
+            /** @enum {string} */
+            kind: "RAISED" | "SOURCE_UPDATED" | "DEACTIVATED" | "REACTIVATED" | "ESCALATED" | "ACKNOWLEDGED";
+            beforeState: ("ACTIVE" | "INACTIVE") | null;
+            /** @enum {string} */
+            afterState: "ACTIVE" | "INACTIVE";
+            /** Format: date-time */
+            recordedAt: string;
+            /** Format: uuid */
+            correlationId: string;
+            acknowledgedBy: {
+                /** Format: uri */
+                issuer: string;
+                /** @description Opaque signed subject; never trim, case-fold or remap. */
+                subject: string;
+            } | null;
+        };
+        ANHistoryPage: {
+            content: components["schemas"]["ANHistoryEntry"][];
+            page: number;
+            size: number;
+            /** Format: int64 */
+            totalElements: number;
+            /** Format: date-time */
+            generatedAt: string;
+        };
+        ANPAlertView: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            incidentId: string;
+            /** Format: uuid */
+            estateId: string;
+            /** Format: uuid */
+            blockId: string;
+            /** @constant */
+            ruleVersion: "CROP_HEALTH_HIGH_V1";
+            /** Format: int64 */
+            sourceVersion: number;
+            /** Format: int64 */
+            alertVersion: number;
+            /** Format: int64 */
+            attentionVersion: number;
+            /** @enum {string} */
+            state: "ACTIVE" | "INACTIVE";
+            inactiveReason: ("RESOLVED" | "VOIDED" | "BELOW_THRESHOLD") | null;
+            /** @enum {string} */
+            category: "PEST_SIGNS" | "DISEASE_SIGNS" | "TREE_DAMAGE" | "OTHER_CROP_HEALTH";
+            /** @enum {string} */
+            severity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+            /** @enum {string} */
+            incidentStatus: "OPEN" | "IN_REVIEW" | "RESOLVED" | "VOIDED";
+            /** @constant */
+            dataProvenance: "SIMULATED";
+            estateTimezone: string;
+            /** Format: date-time */
+            observedAt: string;
+            /** Format: date-time */
+            raisedAt: string;
+            /** Format: date-time */
+            attentionAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: int64 */
+            readAttentionVersion: number;
+            readAt: string | null;
+            unreadForMe: boolean;
+            acknowledged: boolean;
+            acknowledgedAt: string | null;
+            /** @constant */
+            policyVersion: "AN_PRIVACY_PROVISIONAL_1";
+            /** @enum {string} */
+            readState: "UNREAD" | "READ" | "EXPIRED";
+            readExpiresAt: string | null;
+            /** @enum {string} */
+            acknowledgementState: "NONE" | "RETAINED" | "REDACTED";
+        };
+        ANPAlertPage: {
+            content: components["schemas"]["ANPAlertView"][];
+            page: number;
+            size: number;
+            /** Format: int64 */
+            totalElements: number;
+            /** Format: date-time */
+            generatedAt: string;
+        };
+        ANPHistoryPage: {
+            content: components["schemas"]["ANHistoryEntry"][];
+            page: number;
+            size: number;
+            /** Format: int64 */
+            totalElements: number;
+            /** Format: date-time */
+            generatedAt: string;
+            /** @enum {string} */
+            retentionState: "COMPLETE" | "PARTIAL" | "EXPIRED";
+            lastExpiredAt: string | null;
+        };
+        ANPExpiredProblem: {
+            /** Format: uri */
+            type: string;
+            title: string;
+            /** @constant */
+            status: 410;
+            /** @enum {string} */
+            code: "ALERT_API_RETIRED" | "ALERT_COMMAND_EXPIRED" | "ALERT_READ_RETENTION_EXPIRED";
+            /** @constant */
+            policyVersion: "AN_PRIVACY_PROVISIONAL_1";
         };
     };
     responses: never;
@@ -4919,6 +5850,2877 @@ export interface operations {
             /** @description Bounded dependency unavailable or malformed */
             503: {
                 headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    listFieldInspections: {
+        parameters: {
+            query: {
+                page?: number;
+                size?: number;
+                estateId: string;
+                provenance: "SIMULATED";
+                blockId?: string;
+                observedFrom?: string;
+                observedTo?: string;
+                outcome?: "CLEAR" | "FOLLOW_UP";
+                state?: "RECORDED" | "VOIDED";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized query */
+            200: {
+                headers: {
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CHInspectionPage"];
+                };
+            };
+            /** @description Malformed/unknown fields, precision, range or page */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Role/estate/backdate/provenance denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible object */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Version/link/state/key/no-op conflict; bounded lock timeout is retryable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing/inactive/mismatched master reference */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Bounded master dependency failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    recordFieldInspection: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CHInspectionRecord"];
+            };
+        };
+        responses: {
+            /** @description Authorized original command result */
+            201: {
+                headers: {
+                    "X-Correlation-ID"?: string;
+                    /** @description /api/v1/inspections/{id}; preserved on replay */
+                    Location?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CHInspectionCreateResult"];
+                };
+            };
+            /** @description Malformed/unknown fields, precision, range or page */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Role/estate/backdate/provenance denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible object */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Version/link/state/key/no-op conflict; bounded lock timeout is retryable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing/inactive/mismatched master reference */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Bounded master dependency failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    getFieldInspection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized query */
+            200: {
+                headers: {
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CHInspectionView"];
+                };
+            };
+            /** @description Malformed/unknown fields, precision, range or page */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Role/estate/backdate/provenance denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible object */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Version/link/state/key/no-op conflict; bounded lock timeout is retryable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing/inactive/mismatched master reference */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Bounded master dependency failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    getFieldInspectionHistory: {
+        parameters: {
+            query?: {
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized query */
+            200: {
+                headers: {
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CHInspectionHistoryPage"];
+                };
+            };
+            /** @description Malformed/unknown fields, precision, range or page */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Role/estate/backdate/provenance denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible object */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Version/link/state/key/no-op conflict; bounded lock timeout is retryable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing/inactive/mismatched master reference */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Bounded master dependency failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    correctFieldInspection: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CHInspectionCorrect"];
+            };
+        };
+        responses: {
+            /** @description Authorized original command result */
+            200: {
+                headers: {
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CHInspectionCreateResult"];
+                };
+            };
+            /** @description Malformed/unknown fields, precision, range or page */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Role/estate/backdate/provenance denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible object */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Version/link/state/key/no-op conflict; bounded lock timeout is retryable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing/inactive/mismatched master reference */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Bounded master dependency failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    voidFieldInspection: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CHInspectionVoid"];
+            };
+        };
+        responses: {
+            /** @description Authorized original command result */
+            200: {
+                headers: {
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CHInspectionView"];
+                };
+            };
+            /** @description Malformed/unknown fields, precision, range or page */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Role/estate/backdate/provenance denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible object */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Version/link/state/key/no-op conflict; bounded lock timeout is retryable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing/inactive/mismatched master reference */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Bounded master dependency failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    listCropHealthIncidents: {
+        parameters: {
+            query: {
+                page?: number;
+                size?: number;
+                estateId: string;
+                provenance: "SIMULATED";
+                blockId?: string;
+                observedFrom?: string;
+                observedTo?: string;
+                category?: "PEST_SIGNS" | "DISEASE_SIGNS" | "TREE_DAMAGE" | "OTHER_CROP_HEALTH";
+                severity?: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+                status?: ("OPEN" | "IN_REVIEW" | "RESOLVED" | "VOIDED")[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized query */
+            200: {
+                headers: {
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CHIncidentPage"];
+                };
+            };
+            /** @description Malformed/unknown fields, precision, range or page */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Role/estate/backdate/provenance denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible object */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Version/link/state/key/no-op conflict; bounded lock timeout is retryable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing/inactive/mismatched master reference */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Bounded master dependency failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    reportCropHealthIncident: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CHIncidentReport"];
+            };
+        };
+        responses: {
+            /** @description Authorized original command result */
+            201: {
+                headers: {
+                    "X-Correlation-ID"?: string;
+                    /** @description /api/v1/incidents/{id}; preserved on replay */
+                    Location?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CHIncidentView"];
+                };
+            };
+            /** @description Malformed/unknown fields, precision, range or page */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Role/estate/backdate/provenance denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible object */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Version/link/state/key/no-op conflict; bounded lock timeout is retryable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing/inactive/mismatched master reference */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Bounded master dependency failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    getCropHealthIncident: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized query */
+            200: {
+                headers: {
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CHIncidentView"];
+                };
+            };
+            /** @description Malformed/unknown fields, precision, range or page */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Role/estate/backdate/provenance denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible object */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Version/link/state/key/no-op conflict; bounded lock timeout is retryable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing/inactive/mismatched master reference */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Bounded master dependency failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    getCropHealthIncidentHistory: {
+        parameters: {
+            query?: {
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized query */
+            200: {
+                headers: {
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CHIncidentHistoryPage"];
+                };
+            };
+            /** @description Malformed/unknown fields, precision, range or page */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Role/estate/backdate/provenance denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible object */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Version/link/state/key/no-op conflict; bounded lock timeout is retryable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing/inactive/mismatched master reference */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Bounded master dependency failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    amendCropHealthIncident: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CHIncidentEdit"];
+            };
+        };
+        responses: {
+            /** @description Authorized original command result */
+            200: {
+                headers: {
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CHIncidentView"];
+                };
+            };
+            /** @description Malformed/unknown fields, precision, range or page */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Role/estate/backdate/provenance denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible object */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Version/link/state/key/no-op conflict; bounded lock timeout is retryable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing/inactive/mismatched master reference */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Bounded master dependency failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    triageCropHealthIncident: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CHIncidentAction"];
+            };
+        };
+        responses: {
+            /** @description Authorized original command result */
+            200: {
+                headers: {
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CHIncidentView"];
+                };
+            };
+            /** @description Malformed/unknown fields, precision, range or page */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Role/estate/backdate/provenance denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible object */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Version/link/state/key/no-op conflict; bounded lock timeout is retryable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing/inactive/mismatched master reference */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Bounded master dependency failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    resolveCropHealthIncident: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CHIncidentResolve"];
+            };
+        };
+        responses: {
+            /** @description Authorized original command result */
+            200: {
+                headers: {
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CHIncidentView"];
+                };
+            };
+            /** @description Malformed/unknown fields, precision, range or page */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Role/estate/backdate/provenance denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible object */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Version/link/state/key/no-op conflict; bounded lock timeout is retryable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing/inactive/mismatched master reference */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Bounded master dependency failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    reopenCropHealthIncident: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CHIncidentAction"];
+            };
+        };
+        responses: {
+            /** @description Authorized original command result */
+            200: {
+                headers: {
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CHIncidentView"];
+                };
+            };
+            /** @description Malformed/unknown fields, precision, range or page */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Role/estate/backdate/provenance denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible object */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Version/link/state/key/no-op conflict; bounded lock timeout is retryable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing/inactive/mismatched master reference */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Bounded master dependency failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    voidCropHealthIncident: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CHIncidentAction"];
+            };
+        };
+        responses: {
+            /** @description Authorized original command result */
+            200: {
+                headers: {
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CHIncidentView"];
+                };
+            };
+            /** @description Malformed/unknown fields, precision, range or page */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Role/estate/backdate/provenance denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible object */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Version/link/state/key/no-op conflict; bounded lock timeout is retryable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing/inactive/mismatched master reference */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Bounded master dependency failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    correctCropHealthIncident: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CHIncidentEdit"];
+            };
+        };
+        responses: {
+            /** @description Authorized original command result */
+            200: {
+                headers: {
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CHIncidentView"];
+                };
+            };
+            /** @description Malformed/unknown fields, precision, range or page */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid JWT */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Role/estate/backdate/provenance denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible object */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Version/link/state/key/no-op conflict; bounded lock timeout is retryable */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing/inactive/mismatched master reference */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Bounded master dependency failure */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    listCropHealthAlerts: {
+        parameters: {
+            query: {
+                estateId: string;
+                page?: number;
+                size?: number;
+                state?: "ACTIVE" | "INACTIVE";
+                unreadOnly?: boolean;
+                unacknowledgedOnly?: boolean;
+                severity?: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+                blockId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized query; no read side effect */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ANAlertPage"];
+                };
+            };
+            /** @description Malformed/unknown fields/filter/UUID/version/page or page*size > 10000 */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid/missing JWT */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Feature/estate/provenance denied */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible alert */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Stale alert/attention, inactive ack, already acknowledged or conflicting key; bounded lock timeout retryable */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Privacy mode retires v1 alert access; no v1 fallback */
+            410: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ANPExpiredProblem"];
+                };
+            };
+            /** @description Rate limited; respect Retry-After */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    /** @description Delay before retry */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Dependency unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    countCropHealthAlerts: {
+        parameters: {
+            query: {
+                estateId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized query; no read side effect */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ANCounts"];
+                };
+            };
+            /** @description Malformed/unknown fields/filter/UUID/version/page or page*size > 10000 */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid/missing JWT */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Feature/estate/provenance denied */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible alert */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Stale alert/attention, inactive ack, already acknowledged or conflicting key; bounded lock timeout retryable */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Privacy mode retires v1 alert access; no v1 fallback */
+            410: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ANPExpiredProblem"];
+                };
+            };
+            /** @description Rate limited; respect Retry-After */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    /** @description Delay before retry */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Dependency unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    getCropHealthAlert: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                alertId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized query; no read side effect */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ANAlertView"];
+                };
+            };
+            /** @description Malformed/unknown fields/filter/UUID/version/page or page*size > 10000 */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid/missing JWT */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Feature/estate/provenance denied */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible alert */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Stale alert/attention, inactive ack, already acknowledged or conflicting key; bounded lock timeout retryable */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Privacy mode retires v1 alert access; no v1 fallback */
+            410: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ANPExpiredProblem"];
+                };
+            };
+            /** @description Rate limited; respect Retry-After */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    /** @description Delay before retry */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Dependency unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    readCropHealthAlert: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                alertId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ANRead"];
+            };
+        };
+        responses: {
+            /** @description Original authorized success */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ANAlertView"];
+                };
+            };
+            /** @description Malformed/unknown fields/filter/UUID/version/page or page*size > 10000 */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid/missing JWT */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Feature/estate/provenance denied */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible alert */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Stale alert/attention, inactive ack, already acknowledged or conflicting key; bounded lock timeout retryable */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Privacy mode retires v1 alert access; no v1 fallback */
+            410: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ANPExpiredProblem"];
+                };
+            };
+            /** @description Rate limited; respect Retry-After */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    /** @description Delay before retry */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Dependency unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    acknowledgeCropHealthAlert: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                alertId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ANAcknowledge"];
+            };
+        };
+        responses: {
+            /** @description Original authorized success */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ANAlertView"];
+                };
+            };
+            /** @description Malformed/unknown fields/filter/UUID/version/page or page*size > 10000 */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid/missing JWT */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Feature/estate/provenance denied */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible alert */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Stale alert/attention, inactive ack, already acknowledged or conflicting key; bounded lock timeout retryable */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Privacy mode retires v1 alert access; no v1 fallback */
+            410: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ANPExpiredProblem"];
+                };
+            };
+            /** @description Rate limited; respect Retry-After */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    /** @description Delay before retry */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Dependency unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    getCropHealthAlertHistory: {
+        parameters: {
+            query?: {
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path: {
+                alertId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized query; no read side effect */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ANHistoryPage"];
+                };
+            };
+            /** @description Malformed/unknown fields/filter/UUID/version/page or page*size > 10000 */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid/missing JWT */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Feature/estate/provenance denied */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible alert */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Stale alert/attention, inactive ack, already acknowledged or conflicting key; bounded lock timeout retryable */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Privacy mode retires v1 alert access; no v1 fallback */
+            410: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ANPExpiredProblem"];
+                };
+            };
+            /** @description Rate limited; respect Retry-After */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    /** @description Delay before retry */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Dependency unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    listCropHealthAlertsPrivacyV2: {
+        parameters: {
+            query: {
+                estateId: string;
+                page?: number;
+                size?: number;
+                state?: "ACTIVE" | "INACTIVE";
+                unreadOnly?: boolean;
+                unacknowledgedOnly?: boolean;
+                severity?: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+                blockId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized query; no read side effect */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ANPAlertPage"];
+                };
+            };
+            /** @description Malformed/unknown fields/filter/UUID/version/page or page*size > 10000 */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid/missing JWT */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Feature/estate/provenance denied */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible alert */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Stale alert/attention, inactive ack, already acknowledged or conflicting key; bounded lock timeout retryable */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authorized request rejected without an effect or stored success; see closed code. */
+            410: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ANPExpiredProblem"];
+                };
+            };
+            /** @description Rate limited; respect Retry-After */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    /** @description Delay before retry */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Dependency unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    countCropHealthAlertsPrivacyV2: {
+        parameters: {
+            query: {
+                estateId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized query; no read side effect */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ANCounts"];
+                };
+            };
+            /** @description Malformed/unknown fields/filter/UUID/version/page or page*size > 10000 */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid/missing JWT */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Feature/estate/provenance denied */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible alert */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Stale alert/attention, inactive ack, already acknowledged or conflicting key; bounded lock timeout retryable */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authorized request rejected without an effect or stored success; see closed code. */
+            410: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ANPExpiredProblem"];
+                };
+            };
+            /** @description Rate limited; respect Retry-After */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    /** @description Delay before retry */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Dependency unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    getCropHealthAlertPrivacyV2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                alertId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized query; no read side effect */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ANPAlertView"];
+                };
+            };
+            /** @description Malformed/unknown fields/filter/UUID/version/page or page*size > 10000 */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid/missing JWT */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Feature/estate/provenance denied */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible alert */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Stale alert/attention, inactive ack, already acknowledged or conflicting key; bounded lock timeout retryable */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authorized request rejected without an effect or stored success; see closed code. */
+            410: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ANPExpiredProblem"];
+                };
+            };
+            /** @description Rate limited; respect Retry-After */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    /** @description Delay before retry */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Dependency unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    readCropHealthAlertPrivacyV2: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                alertId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ANRead"];
+            };
+        };
+        responses: {
+            /** @description Original authorized success */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ANPAlertView"];
+                };
+            };
+            /** @description Malformed/unknown fields/filter/UUID/version/page or page*size > 10000 */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid/missing JWT */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Feature/estate/provenance denied */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible alert */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Stale alert/attention, inactive ack, already acknowledged or conflicting key; bounded lock timeout retryable */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authorized request rejected without an effect or stored success; see closed code. */
+            410: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ANPExpiredProblem"];
+                };
+            };
+            /** @description Rate limited; respect Retry-After */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    /** @description Delay before retry */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Dependency unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    acknowledgeCropHealthAlertPrivacyV2: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                alertId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ANAcknowledge"];
+            };
+        };
+        responses: {
+            /** @description Original authorized success */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ANPAlertView"];
+                };
+            };
+            /** @description Malformed/unknown fields/filter/UUID/version/page or page*size > 10000 */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid/missing JWT */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Feature/estate/provenance denied */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible alert */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Stale alert/attention, inactive ack, already acknowledged or conflicting key; bounded lock timeout retryable */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authorized request rejected without an effect or stored success; see closed code. */
+            410: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ANPExpiredProblem"];
+                };
+            };
+            /** @description Rate limited; respect Retry-After */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    /** @description Delay before retry */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Dependency unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    getCropHealthAlertHistoryPrivacyV2: {
+        parameters: {
+            query?: {
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path: {
+                alertId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized query; no read side effect */
+            200: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ANPHistoryPage"];
+                };
+            };
+            /** @description Malformed/unknown fields/filter/UUID/version/page or page*size > 10000 */
+            400: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Invalid/missing JWT */
+            401: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Feature/estate/provenance denied */
+            403: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Missing or inaccessible alert */
+            404: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Stale alert/attention, inactive ack, already acknowledged or conflicting key; bounded lock timeout retryable */
+            409: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authorized request rejected without an effect or stored success; see closed code. */
+            410: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ANPExpiredProblem"];
+                };
+            };
+            /** @description Rate limited; respect Retry-After */
+            429: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
+                    /** @description Delay before retry */
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Dependency unavailable */
+            503: {
+                headers: {
+                    "Cache-Control"?: "no-store";
+                    "X-Correlation-ID"?: string;
                     [name: string]: unknown;
                 };
                 content: {

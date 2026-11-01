@@ -1,0 +1,420 @@
+<header class="heading">
+  <div>
+    <p class="eyebrow">FIELD EVIDENCE · SIMULATED</p>
+    <h1>{{ mode === 'inspections' ? 'Inspections' : 'Crop-health incidents' }}</h1>
+  </div>
+  @if (canCreate() && !editor() && !blocked()) {
+    <button type="button" (click)="open('create')">
+      {{ mode === 'inspections' ? 'Record simulated inspection' : 'Report simulated incident' }}
+    </button>
+  }
+</header>
+<p class="scope-note">
+  {{ store.estate()?.name }} · {{ store.estate()?.timezone }}. SIMULATED evidence only. Reports
+  require human review. No automatic diagnosis or notification delivery.
+</p>
+@if (!permitted() || blocked()) {
+  <p role="status">You do not have access to this estate's crop reports.</p>
+}
+@if (error()) {
+  <p class="error" role="alert">{{ error() }}</p>
+}
+@if (notice()) {
+  <p role="status">{{ notice() }}</p>
+}
+@if (permitted() && !blocked()) {
+  @if (editor(); as e) {
+    <section
+      class="editor"
+      role="region"
+      [attr.aria-label]="e.action === 'create' ? 'New simulated report' : 'Review ' + e.action"
+    >
+      <h2 id="crop-editor-title" tabindex="-1">
+        {{ e.action === 'create' ? 'New simulated report' : 'Review ' + e.action }}
+      </h2>
+      <p>
+        Use crop observations only. Do not enter names, personnel cases or personal details.
+        Timestamps require an explicit UTC offset; estate timezone is
+        {{ store.estate()?.timezone }}.
+      </p>
+      <form (submit)="$event.preventDefault(); save()">
+        <fieldset [disabled]="saving() || !!pending()">
+          <legend>Report fields</legend>
+          @if (e.action === 'create') {
+            <label
+              >Field<select
+                name="cropBlock"
+                [value]="e.blockId"
+                (change)="e.blockId = $any($event.target).value"
+                required
+              >
+                <option value="">Select an active field</option>
+                @for (b of store.blocks(); track b.id) {
+                  @if (b.status === 'ACTIVE') {
+                    <option [value]="b.id">{{ b.blockCode }} · {{ b.name }}</option>
+                  }
+                }
+              </select></label
+            >
+          }
+          @if (e.action === 'create' || e.action === 'corrections' || e.action === 'amendments') {
+            <label
+              >Observed at (with UTC offset)<input
+                name="observedAt"
+                [value]="e.observedAt"
+                (input)="e.observedAt = $any($event.target).value"
+                required
+                placeholder="2026-10-31T13:00:00+01:00"
+            /></label>
+            @if (mode === 'inspections') {
+              <label
+                >Outcome<select
+                  name="outcome"
+                  [value]="e.outcome"
+                  (change)="e.outcome = $any($event.target).value"
+                >
+                  <option value="CLEAR">Clear finding</option>
+                  <option value="FOLLOW_UP">Follow-up required</option>
+                </select></label
+              >
+              <label
+                >Findings<textarea
+                  name="findings"
+                  [value]="e.findings"
+                  (input)="e.findings = $any($event.target).value"
+                  required
+                  maxlength="2000"
+                ></textarea>
+              </label>
+            }
+            @if (showReportFields(e)) {
+              <label
+                >Category<select
+                  name="category"
+                  [value]="e.category"
+                  (change)="e.category = $any($event.target).value"
+                >
+                  <option value="PEST_SIGNS">Pest signs</option>
+                  <option value="DISEASE_SIGNS">Disease signs</option>
+                  <option value="TREE_DAMAGE">Tree damage</option>
+                  <option value="OTHER_CROP_HEALTH">Other crop-health observation</option>
+                </select></label
+              >
+              <label
+                >Severity<select
+                  name="severity"
+                  [value]="e.severity"
+                  (change)="e.severity = $any($event.target).value"
+                >
+                  <option value="LOW">Low · routine review</option>
+                  <option value="MEDIUM">Medium · prioritize review</option>
+                  <option value="HIGH">High · prompt manager attention</option>
+                  <option value="CRITICAL">Critical · highest manual priority</option>
+                </select></label
+              >
+              <label
+                >Summary<input
+                  name="summary"
+                  [value]="e.summary"
+                  (input)="e.summary = $any($event.target).value"
+                  required
+                  maxlength="200"
+              /></label>
+              <label
+                >Details<textarea
+                  name="details"
+                  [value]="e.details"
+                  (input)="e.details = $any($event.target).value"
+                  required
+                  maxlength="2000"
+                ></textarea>
+              </label>
+            }
+          }
+          @if (e.action === 'create' && manager()) {
+            <label
+              >Backdate reason (required for a previous estate-local date)<textarea
+                name="backdateReason"
+                [value]="e.backdateReason"
+                (input)="e.backdateReason = $any($event.target).value"
+                maxlength="1000"
+              ></textarea>
+            </label>
+          }
+          @if (e.action === 'resolve') {
+            <label
+              >Resolved at (with UTC offset)<input
+                name="resolvedAt"
+                [value]="e.resolvedAt"
+                (input)="e.resolvedAt = $any($event.target).value"
+                required
+            /></label>
+            <label
+              >Resolution note<textarea
+                name="resolutionNote"
+                [value]="e.resolutionNote"
+                (input)="e.resolutionNote = $any($event.target).value"
+                required
+                maxlength="1000"
+              ></textarea>
+            </label>
+          }
+          @if (e.action !== 'create') {
+            <label
+              >Change reason<textarea
+                name="reason"
+                [value]="e.reason"
+                (input)="e.reason = $any($event.target).value"
+                required
+                maxlength="1000"
+              ></textarea>
+            </label>
+          }
+        </fieldset>
+        @if (!pending()) {
+          <button type="submit" [disabled]="saving()">Save simulated report</button>
+        }
+        @if (pending()) {
+          <p>
+            Your submission is frozen in memory. Retry uses the identical request to prevent
+            duplicate evidence.
+          </p>
+          <button type="button" [disabled]="saving()" (click)="retry()">
+            Retry identical submission
+          </button>
+        }
+        <button type="button" [disabled]="saving()" (click)="discard()">Discard and reload</button>
+        @if (saving()) {
+          <p role="status">Saving report…</p>
+        }
+      </form>
+      @if (latest(); as current) {
+        <aside class="conflict" role="status">
+          <h3>Current record</h3>
+          <p>{{ label(current) }} · version {{ current.version }}</p>
+          <p>
+            Observed {{ localTime(current.observedAt) }}. Your submitted findings/summary remain in
+            the form above. Discard and reload to review a new change.
+          </p>
+        </aside>
+      }
+    </section>
+  } @else {
+    <form (submit)="$event.preventDefault(); load(0)">
+      <fieldset>
+        <legend>Filter reports</legend>
+        <label
+          >Field filter<select
+            name="blockFilter"
+            [value]="blockFilter"
+            (change)="blockFilter = $any($event.target).value"
+          >
+            <option value="">All fields</option>
+            @for (b of store.blocks(); track b.id) {
+              <option [value]="b.id">{{ b.blockCode }} · {{ b.name }}</option>
+            }
+          </select></label
+        >
+        @if (mode === 'incidents') {
+          <label
+            >Status<select
+              name="statusFilter"
+              [value]="statusFilter"
+              (change)="statusFilter = $any($event.target).value"
+            >
+              <option value="ACTIVE">Open and in review</option>
+              <option value="OPEN">Open</option>
+              <option value="IN_REVIEW">In review</option>
+              <option value="RESOLVED">Resolved</option>
+              <option value="VOIDED">Voided</option>
+              <option value="ALL">All statuses</option>
+            </select></label
+          >
+          <label
+            >Category filter<select
+              name="categoryFilter"
+              [value]="categoryFilter"
+              (change)="categoryFilter = $any($event.target).value"
+            >
+              <option value="">All categories</option>
+              <option value="PEST_SIGNS">Pest signs</option>
+              <option value="DISEASE_SIGNS">Disease signs</option>
+              <option value="TREE_DAMAGE">Tree damage</option>
+              <option value="OTHER_CROP_HEALTH">Other crop health</option>
+            </select></label
+          >
+          <label
+            >Severity filter<select
+              name="severityFilter"
+              [value]="severityFilter"
+              (change)="severityFilter = $any($event.target).value"
+            >
+              <option value="">All severities</option>
+              <option value="LOW">Low</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="HIGH">High</option>
+              <option value="CRITICAL">Critical</option>
+            </select></label
+          >
+        } @else {
+          <label
+            >Outcome filter<select
+              name="outcomeFilter"
+              [value]="outcomeFilter"
+              (change)="outcomeFilter = $any($event.target).value"
+            >
+              <option value="">All outcomes</option>
+              <option value="CLEAR">Clear</option>
+              <option value="FOLLOW_UP">Follow-up</option>
+            </select></label
+          >
+          <label
+            >State filter<select
+              name="stateFilter"
+              [value]="stateFilter"
+              (change)="stateFilter = $any($event.target).value"
+            >
+              <option value="">All states</option>
+              <option value="RECORDED">Recorded</option>
+              <option value="VOIDED">Voided</option>
+            </select></label
+          >
+        }
+        <label
+          >Observed from (with offset)<input
+            name="from"
+            [value]="from"
+            (input)="from = $any($event.target).value" /></label
+        ><label
+          >Observed before (with offset)<input
+            name="to"
+            [value]="to"
+            (input)="to = $any($event.target).value"
+        /></label>
+        <button type="submit" [disabled]="busy()">Apply filters</button>
+      </fieldset>
+    </form>
+    @if (busy()) {
+      <p role="status">Loading reports…</p>
+    } @else if (!error() && rows().length === 0) {
+      <p>No matching reports. Missing inspection evidence does not establish crop health.</p>
+    }
+    <div class="records">
+      @for (row of rows(); track row.id) {
+        <article class="record">
+          <span class="badge">SIMULATED · {{ state(row) }}</span>
+          <h2>{{ label(row) }}</h2>
+          <p>{{ field(row.blockId) }} · {{ localTime(row.observedAt) }}</p>
+          @if (!isInspection(row)) {
+            <p>{{ row.category }} · {{ row.severity }}</p>
+          }
+          <button type="button" (click)="openDetail(row.id)" [disabled]="detailBusy()">
+            View report
+          </button>
+        </article>
+      }
+    </div>
+    <nav aria-label="Report pages">
+      <button type="button" (click)="load(page() - 1)" [disabled]="busy() || page() === 0">
+        Previous reports</button
+      ><span>Page {{ page() + 1 }} · {{ total() }} matching reports</span
+      ><button
+        type="button"
+        (click)="load(page() + 1)"
+        [disabled]="busy() || (page() + 1) * 25 >= total()"
+      >
+        Next reports
+      </button>
+    </nav>
+  }
+  @if (detailBusy()) {
+    <p role="status">Loading report and linked evidence…</p>
+  }
+  @if (detail(); as row) {
+    <section class="record" aria-label="Report details">
+      <h2>Report details</h2>
+      <p>{{ label(row) }} · {{ state(row) }} · version {{ row.version }}</p>
+      <p>{{ field(row.blockId) }} · {{ localTime(row.observedAt) }} ({{ row.estateTimezone }})</p>
+      @if (isInspection(row)) {
+        <p>{{ row.findings }}</p>
+        @if (row.linkedIncidentId) {
+          <p>
+            Linked incident: {{ row.linkedIncidentStatus }} · {{ row.linkedIncidentId }}. Inspect it
+            on the Incidents page with all statuses selected.
+          </p>
+        }
+      } @else {
+        <p>{{ row.category }} · {{ row.severity }}</p>
+        <p>{{ row.details }}</p>
+        @if (row.inspectionId) {
+          <p>
+            <a routerLink="/inspections" [queryParams]="{ report: row.inspectionId }"
+              >Inspection evidence</a
+            >: {{ row.inspectionId }}. Linked inspection version {{ parentVersion() }}.
+          </p>
+        }
+        @if (row.resolvedAt) {
+          <p>Resolved {{ localTime(row.resolvedAt) }}: {{ row.resolutionNote }}</p>
+        }
+      }
+      @if (manager() && !editor() && !detailBusy() && state(row) !== 'VOIDED') {
+        <div class="actions">
+          <button type="button" (click)="open('corrections')">Correct evidence</button>
+          @if (!isInspection(row)) {
+            @if (row.status === 'OPEN' || row.status === 'IN_REVIEW') {
+              <button type="button" (click)="open('amendments')">Amend report</button
+              ><button type="button" (click)="open('resolve')">Resolve incident</button>
+            }
+            @if (row.status === 'OPEN') {
+              <button type="button" (click)="open('triage')">Start review</button>
+            }
+            @if (row.status === 'RESOLVED') {
+              <button type="button" (click)="open('reopen')">Reopen incident</button>
+            }
+          }
+          <button type="button" (click)="open('void')">Void report</button>
+        </div>
+      }
+      @if (canHistory() && !editor()) {
+        <button type="button" (click)="historyLoad()" [disabled]="historyBusy()">
+          View protected history
+        </button>
+      }
+    </section>
+  }
+  @if (history(); as h) {
+    <section class="record" aria-label="Protected report history">
+      <h2>Protected history</h2>
+      @for (revision of h.content; track revision.version) {
+        <article>
+          <h3>{{ revision.commandKind }} · version {{ revision.version }}</h3>
+          <p>{{ localTime(revision.recordedAt) }} · {{ revision.recordedBy }}</p>
+          <p>{{ revision.reason ?? 'Initial observation' }}</p>
+          <p>Observed {{ localTime(revision.snapshot.observedAt) }}</p>
+          @if ('findings' in revision.snapshot) {
+            <p>{{ revision.snapshot.findings }}</p>
+          } @else {
+            <p>{{ revision.snapshot.summary }} · {{ revision.snapshot.status }}</p>
+            <p>{{ revision.snapshot.details }}</p>
+          }
+        </article>
+      }
+      <nav aria-label="History pages">
+        <button
+          type="button"
+          (click)="historyLoad(historyPage() - 1)"
+          [disabled]="historyBusy() || historyPage() === 0"
+        >
+          Previous history</button
+        ><span>{{ h.totalElements }} revisions</span
+        ><button
+          type="button"
+          (click)="historyLoad(historyPage() + 1)"
+          [disabled]="historyBusy() || (historyPage() + 1) * 25 >= h.totalElements"
+        >
+          Next history
+        </button>
+      </nav>
+    </section>
+  }
+}

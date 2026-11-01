@@ -1,0 +1,207 @@
+<h1>Crop-health alerts</h1>
+<p>
+  SIMULATED · Human-reported HIGH/CRITICAL crop observations requiring review. This inbox serves
+  signed-in estate users; acknowledgement does not resolve an incident.
+</p>
+@if (!inbox.permitted()) {
+  <p>Select an accessible estate with crop-health permission.</p>
+} @else {
+  <div class="filters">
+    <label
+      >State
+      <select
+        [value]="state()"
+        [disabled]="!!pending()"
+        (change)="state.set($any($event.target).value); load()"
+      >
+        <option>ACTIVE</option>
+        <option>INACTIVE</option>
+      </select></label
+    >
+    <label
+      >Severity
+      <select
+        [value]="severity()"
+        [disabled]="!!pending()"
+        (change)="severity.set($any($event.target).value); load()"
+      >
+        <option value="">All severities</option>
+        <option>LOW</option>
+        <option>MEDIUM</option>
+        <option>HIGH</option>
+        <option>CRITICAL</option>
+      </select></label
+    >
+    <label
+      >Field
+      <select
+        [value]="block()"
+        [disabled]="!!pending()"
+        (change)="block.set($any($event.target).value); load()"
+      >
+        <option value="">All fields</option>
+        @for (b of store.blocks(); track b.id) {
+          <option [value]="b.id">{{ b.name }}</option>
+        }
+      </select></label
+    >
+    <label
+      ><input
+        type="checkbox"
+        [checked]="unreadOnly()"
+        [disabled]="!!pending()"
+        (change)="unreadOnly.set($any($event.target).checked); load()"
+      />Unread only</label
+    >
+    <label
+      ><input
+        type="checkbox"
+        [checked]="unacknowledgedOnly()"
+        [disabled]="!!pending()"
+        (change)="unacknowledgedOnly.set($any($event.target).checked); load()"
+      />Unacknowledged only</label
+    >
+    <button [disabled]="busy() || !!pending()" (click)="load(page()); inbox.refresh()">
+      Refresh alerts
+    </button>
+  </div>
+  @if (error()) {
+    <p role="alert">{{ error() }}</p>
+  }
+  @if (notice()) {
+    <p role="status">{{ notice() }}</p>
+  }
+  @if (pending() && !saving()) {
+    <button (click)="retry()">Retry identical submission</button>
+  }
+  <p>
+    Last successful list refresh: {{ at(refreshed()) }}
+    @if (error() && refreshed()) {
+      <strong> · Stale</strong>
+    }
+  </p>
+  @if (busy()) {
+    <p role="status">Loading alerts…</p>
+  }
+  <ul class="alert-list" aria-label="Estate alerts">
+    @for (row of rows(); track row.id) {
+      <li>
+        <button [disabled]="!!pending()" (click)="open(row.id)">
+          Review {{ row.severity }} alert · {{ field(row.blockId) }}
+        </button>
+        <p>
+          {{ row.state }} ·
+          {{
+            row.readState === 'EXPIRED'
+              ? 'Read state expired'
+              : row.unreadForMe
+                ? 'Unread'
+                : 'Read by you'
+          }}
+          ·
+          {{ row.acknowledged ? 'Acknowledged by a manager' : 'Unacknowledged' }}
+        </p>
+        <p>Observed {{ at(row.observedAt) }} · Attention raised {{ at(row.attentionAt) }}</p>
+      </li>
+    } @empty {
+      @if (!busy() && !error()) {
+        <li>
+          No matching alerts from enabled rule processing. This does not mean the estate has no
+          incidents. Existing reports are not backfilled.
+        </li>
+      }
+    }
+  </ul>
+  <div class="filters">
+    <button [disabled]="page() === 0 || busy() || !!pending()" (click)="load(page() - 1)">
+      Previous alerts</button
+    ><span>Page {{ page() + 1 }} · {{ total() }} matches</span
+    ><button
+      [disabled]="(page() + 1) * 20 >= total() || busy() || !!pending()"
+      (click)="load(page() + 1)"
+    >
+      Next alerts
+    </button>
+  </div>
+  @if (detail(); as row) {
+    <section id="alert-details" aria-label="Alert details" tabindex="-1">
+      <h2>Simulated crop-health report requires review</h2>
+      <p>
+        {{ row.severity }} · {{ row.category }} · {{ row.state }} {{ row.inactiveReason ?? '' }}
+      </p>
+      <p>
+        Incident {{ row.incidentStatus }} · source version {{ row.sourceVersion }} · attention
+        {{ row.attentionVersion }}
+      </p>
+      <p>
+        Observed {{ at(row.observedAt) }} · Raised {{ at(row.raisedAt) }} · Updated
+        {{ at(row.updatedAt) }}
+      </p>
+      <p>
+        {{
+          row.readState === 'EXPIRED'
+            ? 'Read state expired'
+            : row.unreadForMe
+              ? 'Unread by you'
+              : 'Read by you'
+        }}
+        · {{ row.acknowledged ? 'Acknowledged' : 'Unacknowledged' }} {{ at(row.acknowledgedAt) }}
+      </p>
+      @if (row.readState === 'EXPIRED') {
+        <p>
+          Personal read state has expired. Mark read is no longer available for this inactive alert.
+        </p>
+      } @else if (row.readExpiresAt) {
+        <p>Personal read state expires {{ at(row.readExpiresAt) }}.</p>
+      }
+      @if (row.acknowledgementState === 'REDACTED') {
+        <p>The acknowledgement remains recorded; identifying attribution has expired.</p>
+      }
+      <a routerLink="/incidents" [queryParams]="{ report: row.incidentId }">Open source incident</a>
+      <div class="filters">
+        <button [disabled]="saving() || !!pending() || !row.unreadForMe" (click)="act(false)">
+          Mark read
+        </button>
+        @if (auth.canManageCropHealth(store.estateId())) {
+          <button
+            [disabled]="saving() || !!pending() || row.state !== 'ACTIVE' || row.acknowledged"
+            (click)="act(true)"
+          >
+            Acknowledge for estate team
+          </button>
+        }
+        @if (auth.canReadCropHealthHistory(store.estateId())) {
+          <button [disabled]="!!pending()" (click)="showHistory()">View alert history</button>
+        }
+      </div>
+      @if (history(); as h) {
+        <h3>Protected alert history</h3>
+        @if (h.retentionState === 'EXPIRED') {
+          <p>Alert history expired {{ at(h.lastExpiredAt) }}.</p>
+        } @else if (h.retentionState === 'PARTIAL') {
+          <p>
+            Earlier history expired {{ at(h.lastExpiredAt) }}. Only newer entries are available.
+          </p>
+        }
+        <ul>
+          @for (entry of h.content; track entry.alertVersion) {
+            <li>
+              {{ entry.alertVersion }} · {{ entry.kind }} · {{ at(entry.recordedAt) }}
+              @if (entry.acknowledgedBy) {
+                · {{ entry.acknowledgedBy.subject }}
+              }
+            </li>
+          }
+        </ul>
+        <button [disabled]="historyPage() === 0" (click)="showHistory(historyPage() - 1)">
+          Previous history</button
+        ><button
+          [disabled]="(historyPage() + 1) * 20 >= h.totalElements"
+          (click)="showHistory(historyPage() + 1)"
+        >
+          Next history
+        </button>
+      }
+    </section>
+  }
+}

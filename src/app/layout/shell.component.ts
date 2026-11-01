@@ -1,16 +1,18 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../core/auth/auth.service';
+import { AlertInbox } from '../features/alerts/alert-inbox';
 import { EstateStore } from '../features/estates/estate.store';
 @Component({
   standalone: true,
-  providers: [EstateStore],
+  providers: [EstateStore, AlertInbox],
   imports: [RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './shell.component.html',
 })
 export class ShellComponent {
   readonly auth = inject(AuthService);
   readonly store = inject(EstateStore);
+  readonly alerts = inject(AlertInbox);
   readonly router = inject(Router);
   readonly collapsed = signal(false);
   readonly estateQuery = signal('');

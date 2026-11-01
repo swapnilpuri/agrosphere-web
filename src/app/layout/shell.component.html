@@ -7,6 +7,26 @@
     >
     <p class="eyebrow">WORKSPACE</p>
     <nav aria-label="Main navigation">
+      @if (auth.canReadCropHealth(store.estateId())) {
+        <a routerLink="/alerts" routerLinkActive="active" aria-label="Alerts"
+          >⚑
+          <span
+            >Alerts
+            @if (alerts.counts(); as counts) {
+              · {{ counts.activeUnreadForMe }} unread
+            }
+            @if (alerts.unavailable()) {
+              · unavailable
+            }
+          </span></a
+        >
+        <a routerLink="/inspections" routerLinkActive="active" aria-label="Inspections"
+          >⌕ <span>Inspections</span></a
+        >
+        <a routerLink="/incidents" routerLinkActive="active" aria-label="Incidents"
+          >⚑ <span>Incidents</span></a
+        >
+      }
       @if (auth.canReadWorkforce(store.estateId())) {
         <a routerLink="/workers" routerLinkActive="active" aria-label="Workers"
           >♙ <span>Workers</span></a
@@ -65,15 +85,17 @@
       <nav class="breadcrumb" aria-label="Breadcrumb">
         <a routerLink="/dashboard">Workspace</a> /
         {{
-          router.url.includes('digital-twin')
-            ? 'Digital twin'
-            : router.url.includes('administration')
-              ? 'Estate administration'
-              : router.url.includes('workers')
-                ? 'Workers'
-                : router.url.includes('attendance')
-                  ? 'Attendance'
-                  : 'Overview'
+          router.url.includes('alerts')
+            ? 'Alerts'
+            : router.url.includes('digital-twin')
+              ? 'Digital twin'
+              : router.url.includes('administration')
+                ? 'Estate administration'
+                : router.url.includes('workers')
+                  ? 'Workers'
+                  : router.url.includes('attendance')
+                    ? 'Attendance'
+                    : 'Overview'
         }}
         @if (store.estate()) {
           / {{ store.estate()?.estateCode }}

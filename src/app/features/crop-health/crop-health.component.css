@@ -1,0 +1,110 @@
+:host {
+  display: block;
+  max-width: 1200px;
+}
+.heading,
+.actions,
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem;
+  justify-content: space-between;
+}
+.heading h1 {
+  margin-top: 0.2rem;
+}
+.scope-note,
+.record,
+.editor,
+.conflict {
+  border: 1px solid #bdcdc4;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 8px;
+  background: white;
+  overflow-wrap: anywhere;
+}
+.scope-note {
+  background: #eef6f0;
+}
+.editor {
+  border: 2px solid #267153;
+}
+.records {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 1rem;
+}
+fieldset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: end;
+  border: 1px solid #bdcdc4;
+  padding: 1rem;
+  border-radius: 8px;
+  min-width: 0;
+}
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1 1 240px;
+  min-width: 0;
+}
+input,
+select,
+textarea {
+  min-height: 42px;
+  width: 100%;
+  max-width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #829c90;
+  border-radius: 4px;
+  color: #19372b;
+  background: white;
+  box-sizing: border-box;
+}
+textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+button {
+  min-height: 42px;
+  margin: 0.3rem;
+  white-space: normal;
+}
+h2 {
+  font-size: 1.2rem;
+}
+h3 {
+  font-size: 1rem;
+}
+.badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #245c43;
+}
+.error {
+  border-left: 4px solid #a53a25;
+  padding: 0.8rem;
+  background: #fff2ec;
+}
+.conflict {
+  background: #fff4df;
+}
+@media (max-width: 600px) {
+  fieldset,
+  .heading {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  label {
+    flex-basis: auto;
+  }
+  .record,
+  .editor {
+    padding: 0.7rem;
+  }
+}

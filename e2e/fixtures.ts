@@ -140,6 +140,17 @@ export async function mockPlatform(
     }
     await route.fulfill({ json: {} });
   });
+  // Default privacy feature state for retained modules: unavailable, never a real Gateway call.
+  await page.route('http://localhost:8080/api/v2/alerts**', (route) =>
+    route.fulfill({
+      status: 503,
+      json: { title: 'Privacy alerts disabled in this fixture' },
+      headers: {
+        'Access-Control-Allow-Origin': 'http://localhost:4200',
+        'Cache-Control': 'no-store',
+      },
+    }),
+  );
   await page.route('http://localhost:8080/api/v1/**', async (route) => {
     expect(route.request().headers()['authorization']).toMatch(/^Bearer /);
     const url = new URL(route.request().url());

@@ -88,6 +88,23 @@ export class AuthService {
         (this.estateIds().includes(id) && this.roles().some((role) => roles.includes(role))))
     );
   }
+  canReadCropHealth(id: string): boolean {
+    return this.workforcePermission(id, [
+      'ESTATE_ADMIN',
+      'ESTATE_MANAGER',
+      'FIELD_SUPERVISOR',
+      'AUDITOR',
+    ]);
+  }
+  canManageCropHealth(id: string): boolean {
+    return this.workforcePermission(id, ['ESTATE_ADMIN', 'ESTATE_MANAGER']);
+  }
+  canCreateCropHealth(id: string): boolean {
+    return this.workforcePermission(id, ['ESTATE_ADMIN', 'ESTATE_MANAGER', 'FIELD_SUPERVISOR']);
+  }
+  canReadCropHealthHistory(id: string): boolean {
+    return this.workforcePermission(id, ['ESTATE_ADMIN', 'ESTATE_MANAGER', 'AUDITOR']);
+  }
   canManageEstate(id: string): boolean {
     return (
       this.canCreateEstate() ||

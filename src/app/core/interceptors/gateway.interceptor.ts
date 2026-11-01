@@ -10,7 +10,11 @@ export const gatewayInterceptor: HttpInterceptorFn = (request, next) => {
   const gateway = new URL(base, location.origin);
   if (
     url.origin !== gateway.origin ||
-    !url.pathname.startsWith(gateway.pathname.replace(/\/$/, '') + '/api/v1/')
+    !(
+      url.pathname.startsWith(gateway.pathname.replace(/\/$/, '') + '/api/v1/') ||
+      url.pathname === gateway.pathname.replace(/\/$/, '') + '/api/v2/alerts' ||
+      url.pathname.startsWith(gateway.pathname.replace(/\/$/, '') + '/api/v2/alerts/')
+    )
   )
     return next(request);
   return from(auth.token()).pipe(

@@ -1,0 +1,46 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-block: 1rem;
+}
+label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+select,
+button {
+  max-width: 100%;
+  min-height: 44px;
+  white-space: normal;
+}
+.alert-list {
+  padding: 0;
+  list-style: none;
+}
+li,
+section {
+  padding: 1rem;
+  margin-block: 0.75rem;
+  border: 1px solid var(--border, #b9c6bf);
+  border-radius: 0.5rem;
+  overflow-wrap: anywhere;
+}
+p {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 450px) {
+  .filters > label {
+    width: 100%;
+  }
+  select {
+    width: 100%;
+  }
+}

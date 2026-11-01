@@ -11,6 +11,19 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./layout/shell.component').then((m) => m.ShellComponent),
     children: [
+      {
+        path: 'alerts',
+        canDeactivate: [administrationLeaveGuard],
+        loadComponent: () =>
+          import('./features/alerts/alerts.component').then((m) => m.AlertsComponent),
+      },
+      ...['inspections', 'incidents'].map((path) => ({
+        path,
+        data: { cropMode: path },
+        canDeactivate: [administrationLeaveGuard],
+        loadComponent: () =>
+          import('./features/crop-health/crop-health.component').then((m) => m.CropHealthComponent),
+      })),
       ...['workers', 'attendance'].map((path) => ({
         path,
         data: { workforceMode: path },
