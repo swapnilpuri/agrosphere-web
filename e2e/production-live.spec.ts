@@ -114,7 +114,12 @@ test('generated real Operations/broker/Analytics/Gateway daily production', asyn
     await expect(page.getByRole('cell', { name: '3.000', exact: true })).toBeVisible();
     await expect(page.getByRole('cell', { name: '0.000', exact: true })).toBeVisible();
     await expect(page.getByText('Pending DRC remains', { exact: true })).toBeVisible();
-    await expect(page.locator('.badge').filter({ hasText: /SIMULATED.*POC/ })).toBeVisible();
+    await expect(
+      page
+        .getByRole('region', { name: 'Production history', exact: true })
+        .locator('.badge')
+        .filter({ hasText: /SIMULATED.*POC/ }),
+    ).toBeVisible();
     await expect(page.getByText(/Incomplete source evidence:/)).toBeVisible();
     await page.getByText('Source version sample (3)', { exact: true }).click();
     await expect(page.locator('details li')).toHaveCount(3);

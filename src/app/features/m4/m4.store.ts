@@ -59,6 +59,20 @@ export function validForecast(f: Forecast, q: M4Query) {
               Date.parse(s.availableAt) < Date.parse(f.asOf) &&
               s.collectionDate < f.targetDate,
           ) &&
+          (f.labelAsOf === null
+            ? r.actualKg === null &&
+              r.residualKg === null &&
+              r.anomalyStatus === 'NOT_EVALUATED' &&
+              r.labelSources.length === 0
+            : r.actualKg === null || r.predictedKg === null
+              ? r.residualKg === null && r.anomalyStatus === 'UNSCORED'
+              : r.residualKg !== null) &&
+          r.labelSources.every(
+            (s) =>
+              f.labelAsOf !== null &&
+              Date.parse(s.sourceAt) < Date.parse(f.labelAsOf) &&
+              Date.parse(s.availableAt) < Date.parse(f.labelAsOf),
+          ) &&
           (r.residualKg === null ||
             (r.actualKg !== null &&
               r.predictedKg !== null &&

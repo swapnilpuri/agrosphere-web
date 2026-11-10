@@ -32,6 +32,22 @@ export default defineConfig({
       },
     },
     {
+      name: 'm4-live',
+      testMatch: 'm4-live.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        trace: 'off',
+        launchOptions: {
+          args: [
+            '--disable-features=LocalNetworkAccessChecks',
+            '--enable-webgl',
+            '--use-angle=swiftshader',
+            '--enable-unsafe-swiftshader',
+          ],
+        },
+      },
+    },
+    {
       name: 'production-live',
       testMatch: 'production-live.spec.ts',
       use: {
