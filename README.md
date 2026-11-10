@@ -1,5 +1,7 @@
 # AgroSphere web — Estate/GIS and plantation administration
 
+TLM-02 adds SIMULATED selected-block environmental values, source/received times, coverage and optional Cesium freshness tint through unchanged Telemetry 0.10.0. See [feature and verification guide](docs/TELEMETRY.md). Owner functional/M2, offline Android/English–French and REAL/production acceptance remain separate.
+
 ## Web 0.5.0 local - 2026-10-31
 
 The SIMULATED inspections/incidents module is implemented with independent Contracts 0.7.0 pins. See [screen guide](docs/CROP_HEALTH.md) and Architecture INCIDENT_INSPECTION_VERIFICATION.md for actual checks/open gates. Existing data/config and workforce/administration/Cesium are preserved. No existing-stack upgrade or production publication is implied.
@@ -132,3 +134,7 @@ Boundary import accepts owner-supplied WGS84 GeoJSON polygons (1–100 features,
 ## AN-1 Web 0.6.0 local — 2026-10-31
 
 Accepted Operations 0.8.0 pins support the in-app Alerts inbox/badge/read/ack/history and scoped cancellation/retry/conflict flows. See docs/ALERTS.md and Architecture verification. Default backend alerts remain disabled pending subject policy; no live rollout, account provisioning or external notification. Existing owner public/config.json/index are preserved.
+
+## ANL-02 environmental history — 2026-11-05
+
+[Environmental history panel](docs/ENVIRONMENTAL_HISTORY.md) uses independent Contracts 0.12.0, the same selected block and explicit UTC windows beside production dates. Values remain exact per device, with absence/conflicts/source evidence and truncation. Default backend activation and owner/M4 acceptance remain separately scoped.

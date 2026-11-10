@@ -57,6 +57,40 @@ export class AuthService {
       ['PLATFORM_ADMIN', 'ESTATE_ADMIN', 'ESTATE_MANAGER', 'VIEWER'].includes(r),
     );
   }
+  canEnterProductionWorkspace(): boolean {
+    return (
+      this.authenticated() &&
+      (this.roles().some((r) => ['PLATFORM_ADMIN', 'PLANTATION_ADMIN'].includes(r)) ||
+        this.estateIds().some((id) => this.canReadProduction(id)))
+    );
+  }
+  canReadProduction(id: string): boolean {
+    return (
+      this.authenticated() &&
+      !!id &&
+      (this.roles().some((r) => ['PLATFORM_ADMIN', 'PLANTATION_ADMIN'].includes(r)) ||
+        (this.estateIds().includes(id) &&
+          this.roles().some((r) => ['ESTATE_ADMIN', 'ESTATE_MANAGER', 'AUDITOR'].includes(r))))
+    );
+  }
+  canReadTelemetry(id: string): boolean {
+    return (
+      this.authenticated() &&
+      !!id &&
+      (this.roles().some((role) => ['PLATFORM_ADMIN', 'PLANTATION_ADMIN'].includes(role)) ||
+        (this.estateIds().includes(id) &&
+          this.roles().some((role) =>
+            [
+              'ESTATE_ADMIN',
+              'ESTATE_MANAGER',
+              'VIEWER',
+              'FIELD_SUPERVISOR',
+              'FIELD_WORKER',
+              'AUDITOR',
+            ].includes(role),
+          )))
+    );
+  }
   canEnterWorkspace(): boolean {
     return this.canRead() || this.estateIds().some((id) => this.canReadWorkforce(id));
   }

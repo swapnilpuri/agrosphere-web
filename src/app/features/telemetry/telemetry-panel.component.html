@@ -1,0 +1,59 @@
+<section class="telemetry-panel" aria-label="Block environmental readings">
+  <h2>Environmental readings</h2>
+  <span class="badge">SIMULATED · POC</span>
+  @if (telemetry.message()) {
+    <p role="status">{{ telemetry.message() }}</p>
+  }
+  @if (telemetry.selection()) {
+    <button
+      (click)="telemetry.refresh()"
+      [disabled]="telemetry.status() === 'DENIED' || telemetry.status() === 'PAUSED'"
+    >
+      Refresh readings
+    </button>
+  }
+  @if (telemetry.data(); as data) {
+    <p>
+      Kind coverage: <strong>{{ data.coverage }}</strong>
+    </p>
+    <p class="muted">Server refreshed {{ data.generatedAt | date: 'medium' : 'UTC' }} UTC</p>
+    @if (telemetry.status() !== 'READY') {
+      <p>Last-known values · not a current server confirmation.</p>
+    }
+    @for (kind of kinds; track kind) {
+      <div class="reading">
+        <h3>{{ labels[kind] }}</h3>
+        @if (reading(kind); as value) {
+          <span class="value">{{ value.value }} {{ units[value.unit] }}</span>
+          <p>{{ telemetry.status() === 'READY' ? telemetry.state(value) : 'UNAVAILABLE' }}</p>
+          <p>Observed {{ value.observedAt | date: 'medium' : 'UTC' }} UTC</p>
+          <p>Received {{ value.receivedAt | date: 'medium' : 'UTC' }} UTC</p>
+          @if (value.kind === 'INTERVAL_RAINFALL') {
+            <p>
+              Interval {{ value.intervalStart | date: 'medium' : 'UTC' }} –
+              {{ value.intervalEnd | date: 'medium' : 'UTC' }} UTC
+            </p>
+          }
+        } @else {
+          <p>NONE · no reading supplied</p>
+        }
+      </div>
+    }
+  }
+  <label
+    ><input
+      type="checkbox"
+      [checked]="telemetry.overlayEnabled()"
+      (change)="telemetry.overlayEnabled.set($any($event.target).checked)"
+    />
+    Environmental freshness overlay</label
+  >
+  <div class="legend" aria-label="Environmental freshness legend">
+    <span class="current">Blue · CURRENT</span><span class="stale">Amber · STALE</span
+    ><span>Grey · NONE</span><span class="clock">Purple · CLOCK_AHEAD</span>
+  </div>
+  <p class="muted">
+    Selected block only · {{ telemetry.ageSeconds }}-second POC display-age boundary. Freshness is
+    not crop-health severity, sensor accuracy or measured coverage.
+  </p>
+</section>

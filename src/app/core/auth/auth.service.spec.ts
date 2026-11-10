@@ -58,6 +58,28 @@ describe('Keycloak session', () => {
       ],
     });
   });
+  it('keeps production summary permissions separate from other workspaces', async () => {
+    const id = '00000000-0000-4000-8000-000000000001';
+    const auth = TestBed.inject(AuthService);
+    await auth.initialize();
+    auth.roles.set(['PLANTATION_ADMIN']);
+    expect(auth.canEnterProductionWorkspace()).toBe(true);
+    expect(auth.canReadProduction(id)).toBe(true);
+    expect(auth.canRead()).toBe(false);
+    expect(auth.canReadWorkforce(id)).toBe(false);
+    for (const role of ['VIEWER', 'FIELD_WORKER', 'WORKER', 'FIELD_SUPERVISOR']) {
+      auth.roles.set([role]);
+      auth.estateIds.set([id]);
+      expect(auth.canReadProduction(id)).toBe(false);
+    }
+    for (const role of ['ESTATE_ADMIN', 'ESTATE_MANAGER', 'AUDITOR']) {
+      auth.roles.set([role]);
+      expect(auth.canReadProduction(id)).toBe(true);
+      expect(auth.canReadProduction('foreign')).toBe(false);
+    }
+    auth.clear();
+    expect(auth.canReadProduction(id)).toBe(false);
+  });
   it('initializes with S256 PKCE and renews memory tokens', async () => {
     const auth = TestBed.inject(AuthService);
     await auth.initialize();

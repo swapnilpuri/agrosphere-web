@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased - approved ANL-01 finite admission
+
+Document the accepted finite generated Analytics admission profile and its source-completeness limits; no product code, private runtime config or contract change.
+
+## Unreleased - ANL-01 runtime, 2026-11-05
+
+Add independently pinned Contracts 0.11.0 Analytics types, dedicated production-read permission/route, materialized history table/trend and explicit absence/pending-zero/incomplete/source metadata. Preserve cancellation/scope/visibility and existing permissions. Generated real browser checks use transient fixtures and no traces.
+
+## Unreleased — 2026-11-05 TLM-02
+
+Add read-only selected-block SIMULATED environmental values/times/coverage and optional Cesium freshness tint through the independently pinned unchanged Telemetry 0.10.0 API. Cancel selection races, pause hidden refresh, clear denied data and retain explicit last-known outage states. Add deterministic fixture browser checks and configurable isolated test ports; preserve runtime configuration and existing features. See docs/TELEMETRY.md and Architecture verification; owner/M2/field/REAL gates remain separate.
+
 ## Unreleased — 2026-10-31 AN-1
 
 Accepted Operations 0.8.0 pins support the in-app Alerts inbox/badge/read/ack/history and scoped cancellation/retry/conflict flows. See docs/ALERTS.md and Architecture verification. Default backend alerts remain disabled pending subject policy; no live rollout, account provisioning or external notification. Existing owner public/config.json/index are preserved.
@@ -40,3 +52,7 @@ Independent Milestone 0 foundation.
 ## 0.7.0 — 2026-10-31
 
 Pins accepted Operations Contracts 0.9.0 with prior-0.8.0 archive. Alert calls use v2, canonical UUIDv7 frozen retry keys, expired read/ack/history states and explicit 410/unknown-outcome handling; no automatic replacement commands or offline persistence. Token attachment is extended only to configured-Gateway v2 alert routes. Existing public/config.json preserved.
+
+## Unreleased — ANL-02 runtime, 2026-11-05
+
+- Implemented approved generated-only environmental history and bounded verification; preserved prior artifacts/features, exact pins and existing-target/private-config/Git/AEO exclusions. See runtime guide and Architecture verification for actual results and open owner/field/REAL gates.

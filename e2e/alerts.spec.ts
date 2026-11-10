@@ -3,7 +3,7 @@ import type { AlertRow } from '../src/app/features/alerts/alerts.api';
 import { mockPlatform, signIn, estateId, blockId } from './fixtures';
 const id = '00000000-0000-4000-8000-000000000091';
 const headers = {
-  'Access-Control-Allow-Origin': 'http://localhost:4200',
+  'Access-Control-Allow-Origin': `http://localhost:${process.env['AGRO_TEST_PORT'] ?? '4200'}`,
   'Cache-Control': 'no-store',
 };
 const initial: AlertRow = {
@@ -154,7 +154,9 @@ test('stale acknowledgement refreshes facts without silently acknowledging a new
   });
   page.once('dialog', (d) => d.accept());
   await page.getByRole('button', { name: 'Acknowledge for estate team' }).click();
-  await expect(page.getByRole('status')).toContainText('Review the refreshed facts');
+  await expect(
+    page.getByRole('status').filter({ hasText: 'Review the refreshed facts' }),
+  ).toBeVisible();
   expect(writes).toBe(1);
   await expect(page.getByRole('button', { name: 'Retry identical submission' })).toHaveCount(0);
 });
@@ -232,7 +234,9 @@ test('410 discards frozen retry and never submits a replacement automatically', 
     });
   });
   await page.getByRole('button', { name: 'Mark read', exact: true }).click();
-  await expect(page.getByRole('status')).toContainText('expired');
+  await expect(
+    page.getByRole('status').filter({ hasText: 'This command or read state expired' }),
+  ).toBeVisible();
   await expect(page.getByRole('button', { name: 'Retry identical submission' })).toHaveCount(0);
   await expect(page.getByLabel('Current estate')).toBeEnabled();
   expect(commands).toBe(1);

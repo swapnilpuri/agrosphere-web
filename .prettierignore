@@ -6,3 +6,9 @@ src/api
 contracts
 playwright-report
 test-results
+target
+# Private runtime configuration is owned by the local operator.
+public/config.json
+
+# Exact prior accepted Analytics pin bytes.
+docs/analytics-previous-0.11.0

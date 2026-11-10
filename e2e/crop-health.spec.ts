@@ -1,6 +1,8 @@
 import { test, expect, Page } from '@playwright/test';
 import { mockPlatform, signIn, estateId, blockId } from './fixtures';
-const headers = { 'Access-Control-Allow-Origin': 'http://localhost:4200' };
+const headers = {
+  'Access-Control-Allow-Origin': `http://localhost:${process.env['AGRO_TEST_PORT'] ?? '4200'}`,
+};
 const id = '00000000-0000-4000-8000-000000000081';
 const incident = {
   id,

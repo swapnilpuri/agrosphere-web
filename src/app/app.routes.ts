@@ -1,10 +1,23 @@
 import { Routes } from '@angular/router';
+import { productionGuard } from './features/production/production.guard';
 import { authGuard } from './core/auth/auth.guard';
 import { administrationLeaveGuard } from './features/administration/administration.guard';
 export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () => import('./core/auth/login.component').then((m) => m.LoginComponent),
+  },
+  {
+    path: 'production-history',
+    canActivate: [productionGuard],
+    loadComponent: () => import('./layout/shell.component').then((m) => m.ShellComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/production/production.component').then((m) => m.ProductionComponent),
+      },
+    ],
   },
   {
     path: '',

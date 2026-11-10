@@ -20,7 +20,9 @@ const worker = {
   createdAt: '2026-01-01T00:00:00Z',
   updatedAt: '2026-01-01T00:00:00Z',
 };
-const headers = { 'Access-Control-Allow-Origin': 'http://localhost:4200' };
+const headers = {
+  'Access-Control-Allow-Origin': `http://localhost:${process.env['AGRO_TEST_PORT'] ?? '4200'}`,
+};
 async function setup(page: Page, roles = ['ESTATE_MANAGER']) {
   await mockPlatform(page, roles);
   await page.route('**/api/v1/workers**', async (route) => {

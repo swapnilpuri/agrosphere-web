@@ -38,4 +38,6 @@ http
       res.end('Preview unavailable');
     }
   })
-  .listen(4200, '127.0.0.1', () => console.log('Preview: http://localhost:4200'));
+  .listen(Number(process.env['AGRO_TEST_PORT'] ?? 4200), '127.0.0.1', () =>
+    console.log('Preview ready'),
+  );

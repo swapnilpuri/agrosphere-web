@@ -272,6 +272,12 @@ main#main {
   background: white;
   min-height: 600px;
 }
+.block-telemetry-details {
+  min-width: 0;
+  max-height: 720px;
+  overflow: auto;
+  overflow-wrap: anywhere;
+}
 .explorer {
   padding: 18px;
   border-right: 1px solid var(--line);
@@ -456,8 +462,12 @@ summary {
   .twin-grid {
     grid-template-columns: 190px minmax(250px, 1fr);
   }
-  agro-block-detail {
+  agro-block-detail,
+  .block-telemetry-details {
     grid-column: 1/-1;
+  }
+  .block-telemetry-details {
+    max-height: none;
   }
   .detail {
     max-height: none;

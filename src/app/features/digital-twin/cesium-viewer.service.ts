@@ -37,6 +37,8 @@ export class CesiumViewerService {
   private readonly materials = new WeakMap<Entity, ColorMaterialProperty>();
   private readonly outlines = new WeakMap<Entity, ConstantProperty>();
   private selected = '';
+  private overlayBlock = '';
+  private overlayTint?: Color;
   private hovered = '';
   private visible: ReadonlySet<Category> = new Set();
   private features: Feature[] = [];
@@ -247,6 +249,11 @@ export class CesiumViewerService {
     this.selected = id;
     this.paint();
   }
+  setTelemetryOverlay(block: string, tint?: string) {
+    this.overlayBlock = block;
+    this.overlayTint = tint ? Color.fromCssColorString(tint) : undefined;
+    this.paint();
+  }
   private paint() {
     const viewer = this.viewer;
     if (!viewer || viewer.isDestroyed()) return;
@@ -260,7 +267,11 @@ export class CesiumViewerService {
           : hover
             ? Color.WHITE
             : Color.fromCssColorString(colors[category]);
-        const nextColor = color.withAlpha(
+        const fill =
+          selected && category === 'BLOCK' && id === this.overlayBlock
+            ? (this.overlayTint ?? color)
+            : color;
+        const nextColor = fill.withAlpha(
           entity.polygon
             ? selected
               ? 0.75
@@ -323,8 +334,11 @@ export class CesiumViewerService {
     });
   }
   reset() {
-    const estate = this.features.find((f) => f.referenceEntityType === 'ESTATE');
-    if (estate) this.fly(estate.referenceEntityId);
+    const feature =
+      this.features.find((f) => f.referenceEntityType === 'ESTATE') ?? this.features[0];
+    // Use canonical bounds even without an estate polygon. A pending data-source
+    // flyTo can otherwise complete after a subsequent selected-block flight.
+    if (feature) this.fly(feature.referenceEntityId);
     else if (this.viewer && this.sources.size)
       void this.viewer.flyTo([...this.sources.values()][0]);
   }
@@ -343,6 +357,8 @@ export class CesiumViewerService {
       : null;
   }
   destroy() {
+    this.overlayBlock = '';
+    this.overlayTint = undefined;
     ++this.generation;
     for (const remove of this.cameraListeners) remove();
     this.cameraListeners = [];

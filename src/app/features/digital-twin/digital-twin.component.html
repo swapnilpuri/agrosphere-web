@@ -75,7 +75,16 @@
       <div class="map-empty">No active geometry supplied for this estate.</div>
     }
   </section>
-  <agro-block-detail />
+  <div class="block-telemetry-details">
+    <agro-block-detail />
+    @if (
+      !store.selectedBlock() ||
+      (telemetry.selection()?.estate === store.estateId() &&
+        telemetry.selection()?.block === store.selectedBlock()?.id)
+    ) {
+      <agro-telemetry-panel />
+    }
+  </div>
 </div>
 <p class="muted">
   Data retrieved {{ store.timestamp() | date: 'medium' }} · Geometry provenance appears in block

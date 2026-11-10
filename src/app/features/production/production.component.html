@@ -1,0 +1,153 @@
+<section aria-label="Production history">
+  <header>
+    <p class="eyebrow">MATERIALIZED ANALYTICS</p>
+    <h1>Daily production history</h1>
+    <span class="badge">SIMULATED · POC</span>
+  </header>
+  <p>
+    Operations collection date · observed records only. This view does not certify complete event
+    history or measured plantation yield.
+  </p>
+  <form (submit)="$event.preventDefault(); load()">
+    <label
+      >Production block<select
+        aria-label="Production block"
+        [value]="block()"
+        (change)="block.set($any($event.target).value)"
+      >
+        <option value="">Choose a block</option>
+        @for (b of estates.blocks(); track b.id) {
+          <option [value]="b.id">{{ b.blockCode }} · {{ b.name }}</option>
+        }
+      </select></label
+    >
+    <label
+      >From collection date<input
+        type="date"
+        [value]="from()"
+        (input)="from.set($any($event.target).value)"
+    /></label>
+    <label
+      >To collection date<input
+        type="date"
+        [value]="to()"
+        (input)="to.set($any($event.target).value)"
+    /></label>
+    <button
+      type="submit"
+      [disabled]="!auth.canReadProduction(estates.estateId()) || history.status() === 'PENDING'"
+    >
+      Read history
+    </button>
+  </form>
+  @if (history.message()) {
+    <p role="status">{{ history.message() }}</p>
+  }
+  @if (history.data(); as data) {
+    <h2>Observed production · {{ data.projectionState }}</h2>
+    <p>
+      Response {{ data.generatedAt }} · Last processed
+      {{ data.lastProcessedAt ?? 'No source processed' }} · Latest inspected source
+      {{ data.latestSourceEventAt ?? 'No SIMULATED source observed' }}
+    </p>
+    @if (data.projectionState === 'INCOMPLETE') {
+      <p class="warning" role="status">
+        Incomplete source evidence: {{ data.missingSourceVersionCount }} version holes,
+        {{ data.conflictCount }} conflicting event IDs, {{ data.unsupportedCount }} unsupported
+        events. Counts cover the whole block, including outside these dates.
+      </p>
+    }
+    <p>
+      Blue: observed wet kg · Purple: known dry kg. Relative illustrative trend; exact masses are in
+      the table. Missing days and unknown DRC break the lines.
+    </p>
+    <svg viewBox="0 0 600 180" role="img" aria-label="Observed wet and known dry production trend">
+      @for (part of wet(); track $index) {
+        <polyline [attr.points]="part" stroke="#1e88e5" />
+        @for (point of part.split(' '); track $index) {
+          <circle
+            [attr.cx]="point.split(',')[0]"
+            [attr.cy]="point.split(',')[1]"
+            r="3"
+            fill="#1e88e5"
+          />
+        }
+      }
+      @for (part of dry(); track $index) {
+        <polyline [attr.points]="part" stroke="#8758ad" />
+        @for (point of part.split(' '); track $index) {
+          <circle
+            [attr.cx]="point.split(',')[0]"
+            [attr.cy]="point.split(',')[1]"
+            r="3"
+            fill="#8758ad"
+          />
+        }
+      }
+    </svg>
+    <div class="table-scroll">
+      <table>
+        <caption>
+          Materialized daily values · exact kg
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Collection date</th>
+            <th scope="col">Evidence</th>
+            <th scope="col">Wet kg</th>
+            <th scope="col">Known dry kg</th>
+            <th scope="col">Active / pending / calculated / voided</th>
+            <th scope="col">DRC coverage</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (day of data.days; track day.date) {
+            <tr>
+              <th scope="row">{{ day.date }}</th>
+              <td>{{ day.availability }}</td>
+              @if (day.metrics; as m) {
+                <td>{{ m.totalWetLatexKg }}</td>
+                <td>{{ m.knownDryRubberKg ?? 'Unknown DRC' }}</td>
+                <td>
+                  {{ m.activeCollectionCount }} / {{ m.pendingDrcCount }} /
+                  {{ m.calculatedCollectionCount }} / {{ m.voidedCollectionCount }}
+                </td>
+                <td>
+                  {{
+                    m.isComplete
+                      ? 'No pending DRC among observed active collections'
+                      : 'Pending DRC remains'
+                  }}
+                </td>
+              } @else {
+                <td colspan="4">No observed collection roots · actual production unknown</td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <details>
+      <summary>Source version sample ({{ data.sourceVersionSample.length }})</summary>
+      <p>
+        {{
+          data.sourceVersionSampleTruncated
+            ? 'Truncated to 100 sources; totals include all matching roots.'
+            : 'Highest-version references for observed roots in this date range.'
+        }}
+      </p>
+      <ul>
+        @for (source of data.sourceVersionSample; track source.collectionId) {
+          <li>
+            {{ source.collectionDate }} · {{ source.collectionId }} · version
+            {{ source.aggregateVersion }} · event {{ source.sourceEventId }} ·
+            {{ source.sourceEventAt }}
+          </li>
+        }
+      </ul>
+    </details>
+  }
+</section>
+<agro-environment-history [estateId]="estates.estateId()" [blockId]="block()" />
+
+<agro-m4 [estateId]="estates.estateId()" [blockId]="block()" />

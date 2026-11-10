@@ -12,6 +12,7 @@ import {
 import { CesiumViewerService } from './cesium-viewer.service';
 import { EstateStore } from '../estates/estate.store';
 import { CONFIG } from '../../core/config';
+import { TelemetryStore } from '../telemetry/telemetry.store';
 @Component({
   selector: 'agro-cesium-viewer',
   standalone: true,
@@ -25,6 +26,7 @@ export class CesiumViewerComponent implements AfterViewInit, OnDestroy {
   readonly store = inject(EstateStore);
   private readonly engine = inject(CesiumViewerService);
   private readonly config = inject(CONFIG);
+  private readonly telemetry = inject(TelemetryStore, { optional: true });
   private readonly zone = inject(NgZone);
   private readonly host = viewChild.required<ElementRef<HTMLElement>>('canvas');
   readonly moving = signal(false);
@@ -35,6 +37,19 @@ export class CesiumViewerComponent implements AfterViewInit, OnDestroy {
   readonly navigation = signal('');
   private readonly loadedGeneration = signal(0);
   constructor() {
+    effect(() => {
+      this.loadedGeneration();
+      const selected = this.store.selectedBlock()?.id ?? '';
+      if (this.ready() && this.telemetry) {
+        const selection = this.telemetry.selection();
+        this.engine.setTelemetryOverlay(
+          selection?.estate === this.store.estateId() && selection?.block === selected
+            ? selected
+            : '',
+          this.telemetry.tint(),
+        );
+      }
+    });
     effect(() => {
       const features = this.store.features();
       const assets = this.store.assets();

@@ -5,5 +5,9 @@ export const authGuard: CanActivateFn = async () => {
   const auth = inject(AuthService);
   const router = inject(Router);
   await auth.initialize();
-  return (auth.authenticated() && auth.canEnterWorkspace()) || router.createUrlTree(['/login']);
+  if (!auth.authenticated()) return router.createUrlTree(['/login']);
+  if (auth.canEnterWorkspace()) return true;
+  return router.createUrlTree([
+    auth.canEnterProductionWorkspace() ? '/production-history' : '/login',
+  ]);
 };

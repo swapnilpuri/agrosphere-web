@@ -42,6 +42,14 @@
           >▤ <span>Estate administration</span></a
         >
       }
+      @if (auth.canReadProduction(store.estateId())) {
+        <a
+          routerLink="/production-history"
+          routerLinkActive="active"
+          aria-label="Production history"
+          >▥ <span>Production history</span></a
+        >
+      }
     </nav>
     <div class="nav-foot"><span class="status-dot"></span><span>Milestone 2 · Rubber</span></div>
   </aside>
@@ -85,17 +93,19 @@
       <nav class="breadcrumb" aria-label="Breadcrumb">
         <a routerLink="/dashboard">Workspace</a> /
         {{
-          router.url.includes('alerts')
-            ? 'Alerts'
-            : router.url.includes('digital-twin')
-              ? 'Digital twin'
-              : router.url.includes('administration')
-                ? 'Estate administration'
-                : router.url.includes('workers')
-                  ? 'Workers'
-                  : router.url.includes('attendance')
-                    ? 'Attendance'
-                    : 'Overview'
+          router.url.includes('production-history')
+            ? 'Production history'
+            : router.url.includes('alerts')
+              ? 'Alerts'
+              : router.url.includes('digital-twin')
+                ? 'Digital twin'
+                : router.url.includes('administration')
+                  ? 'Estate administration'
+                  : router.url.includes('workers')
+                    ? 'Workers'
+                    : router.url.includes('attendance')
+                      ? 'Attendance'
+                      : 'Overview'
         }}
         @if (store.estate()) {
           / {{ store.estate()?.estateCode }}

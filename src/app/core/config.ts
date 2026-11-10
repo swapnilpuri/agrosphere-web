@@ -1,5 +1,6 @@
 import { InjectionToken } from '@angular/core';
 export interface AppConfig {
+  telemetry?: { displayAgeSeconds?: number; pollSeconds?: number };
   apiBaseUrl: string;
   keycloak: { url: string; realm: string; clientId: string };
   cesium: {

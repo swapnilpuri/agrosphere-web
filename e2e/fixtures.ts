@@ -125,7 +125,7 @@ export async function mockPlatform(
           session_state: 'test-session',
         },
         headers: {
-          'Access-Control-Allow-Origin': 'http://localhost:4200',
+          'Access-Control-Allow-Origin': `http://localhost:${process.env['AGRO_TEST_PORT'] ?? '4200'}`,
           'Access-Control-Allow-Credentials': 'true',
         },
       });
@@ -134,7 +134,7 @@ export async function mockPlatform(
     if (url.pathname.endsWith('/logout')) {
       await route.fulfill({
         contentType: 'text/html',
-        body: '<script>location.href="http://localhost:4200/login"</script>',
+        body: `<script>location.href="http://localhost:${process.env['AGRO_TEST_PORT'] ?? '4200'}/login"</script>`,
       });
       return;
     }
@@ -146,7 +146,7 @@ export async function mockPlatform(
       status: 503,
       json: { title: 'Privacy alerts disabled in this fixture' },
       headers: {
-        'Access-Control-Allow-Origin': 'http://localhost:4200',
+        'Access-Control-Allow-Origin': `http://localhost:${process.env['AGRO_TEST_PORT'] ?? '4200'}`,
         'Cache-Control': 'no-store',
       },
     }),
@@ -200,7 +200,9 @@ export async function mockPlatform(
     }
     await route.fulfill({
       json: body,
-      headers: { 'Access-Control-Allow-Origin': 'http://localhost:4200' },
+      headers: {
+        'Access-Control-Allow-Origin': `http://localhost:${process.env['AGRO_TEST_PORT'] ?? '4200'}`,
+      },
     });
   });
 }

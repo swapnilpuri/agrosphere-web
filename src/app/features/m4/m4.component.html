@@ -1,0 +1,124 @@
+<section aria-label="Forecasts and evidence assistant">
+  <h2>Forecasts and evidence assistant</h2>
+  <p>
+    SIMULATED sources · PREDICTED forecast · DEMO_ONLY · UNCALIBRATED. Observed collection mass is
+    not complete plantation yield.
+  </p>
+  <form (submit)="$event.preventDefault(); ai.load(query())">
+    <label
+      >Chronology<select
+        aria-label="AI chronology"
+        [value]="mode()"
+        (change)="mode.set($any($event.target).value)"
+      >
+        <option value="GENERATED_POINT_IN_TIME">Generated availability simulation</option>
+        <option value="LIVE_FIRST_RECEIPT">Actual first-receipt history</option>
+      </select></label
+    >
+    <label
+      >Dataset fingerprint<input
+        aria-label="AI dataset fingerprint"
+        [value]="dataset()"
+        (input)="dataset.set($any($event.target).value)"
+    /></label>
+    <label
+      >Forecast cutoff in UTC<input
+        aria-label="AI forecast cutoff"
+        placeholder="2026-11-01T00:00:00Z"
+        [value]="asOf()"
+        (input)="asOf.set($any($event.target).value)"
+    /></label>
+    <label
+      >Optional label cutoff in UTC<input
+        aria-label="AI label cutoff"
+        [value]="labelAsOf()"
+        (input)="labelAsOf.set($any($event.target).value)"
+    /></label>
+    <button type="submit" [disabled]="!auth.canReadProduction(estateId())">Read forecast</button>
+  </form>
+  <p role="status">{{ ai.status() }} {{ ai.message() }}</p>
+  @if (mode() === 'GENERATED_POINT_IN_TIME') {
+    <p>Availability is fixture-assigned. This is not evidence of historical broker receipt.</p>
+  }
+  @if (ai.data(); as data) {
+    <p>
+      Target {{ data.targetDate }} · {{ data.estateTimezone }} · features frozen at
+      {{ data.asOf }} · label evidence {{ data.labelAsOf ?? 'not requested' }}
+    </p>
+    <table>
+      <caption>
+        Observed-mass baseline and residual
+      </caption>
+      <thead>
+        <tr>
+          <th>Target</th>
+          <th>Eligibility</th>
+          <th>Mean forecast kg</th>
+          <th>Last-day comparator kg</th>
+          <th>Observed actual kg</th>
+          <th>Residual kg</th>
+          <th>Anomaly</th>
+          <th>Model</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of data.targets; track r.target) {
+          <tr>
+            <td>{{ r.target }}</td>
+            <td>{{ r.status }}</td>
+            <td>{{ r.predictedKg ?? 'Withheld' }}</td>
+            <td>{{ r.comparatorKg ?? 'Unavailable' }}</td>
+            <td>{{ r.actualKg ?? 'Unscored' }}</td>
+            <td>{{ r.residualKg ?? 'Unavailable' }}</td>
+            <td>{{ r.anomalyStatus }} · absolute residual &gt; {{ r.thresholdKg }} kg</td>
+            <td>
+              <button (click)="model(r.modelId)">Inspect {{ r.target }} model</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <button (click)="hotspot()">Select this canonical block</button>
+    <label
+      >Evaluation fingerprint<input
+        aria-label="AI evaluation fingerprint"
+        [value]="evaluation()"
+        (input)="evaluation.set($any($event.target).value)"
+    /></label>
+    <button (click)="inspectEvaluation()">Inspect evaluation metrics</button>
+    <h3>Evidence assistant</h3>
+    <button (click)="ai.ask(query(), 'PRODUCTION_SUMMARY')">Explain production evidence</button>
+    <button (click)="ai.ask(query(), 'FORECAST_EXPLANATION')">Explain forecast</button>
+    <button (click)="ai.ask(query(), 'ANOMALY_EXPLANATION')">Explain anomaly</button>
+    <button (click)="ai.ask(query(), 'EVIDENCE_INSPECTION')">Inspect supporting evidence</button>
+    @if (ai.answer(); as answer) {
+      <p>{{ answer.status }} · deterministic evidence templates · {{ answer.templateVersion }}</p>
+      @for (statement of answer.statements; track $index) {
+        <p>{{ statement.text }}</p>
+        @for (ref of statement.evidenceRefs; track $index) {
+          <button (click)="ai.inspect(query(), ref.href)">Open {{ ref.kind }} evidence</button>
+        }
+      }
+      <ul>
+        @for (limitation of answer.limitations; track $index) {
+          <li>{{ limitation }}</li>
+        }
+      </ul>
+    }
+    @if (ai.inspection(); as evidence) {
+      <h3>Authorized evidence record</h3>
+      <pre aria-label="AI evidence record">{{ evidence | json }}</pre>
+    }
+    <details>
+      <summary>Frozen feature sources</summary>
+      <ul>
+        @for (source of data.targets[0].sources; track source.eventId) {
+          <li>
+            {{ source.collectionDate }} · {{ source.eventId }} · version {{ source.version }} ·
+            available {{ source.availableAt }}
+          </li>
+        }
+      </ul>
+    </details>
+  }
+</section>

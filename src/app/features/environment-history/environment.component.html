@@ -1,0 +1,114 @@
+<section aria-label="Environmental observation history">
+  <header>
+    <p class="eyebrow">OBSERVED ENVIRONMENT</p>
+    <h2>Environmental observation history</h2>
+    <span class="badge">SIMULATED · POC</span>
+  </header>
+  <p>
+    Uses the selected production block. Enter an explicit UTC window, positive and at most 24 hours.
+    Production keeps its independent collection dates.
+  </p>
+  <form (submit)="$event.preventDefault(); load()">
+    <label
+      >From observation UTC<input
+        type="text"
+        size="28"
+        aria-label="From observation UTC"
+        placeholder="2026-01-01T00:00:00Z"
+        [value]="from()"
+        (input)="from.set($any($event.target).value)"
+    /></label>
+    <label
+      >To observation UTC<input
+        type="text"
+        size="28"
+        aria-label="To observation UTC"
+        placeholder="2026-01-02T00:00:00Z"
+        [value]="to()"
+        (input)="to.set($any($event.target).value)"
+    /></label>
+    <button
+      type="submit"
+      [disabled]="
+        !blockId() || !auth.canReadProduction(estateId()) || history.status() === 'PENDING'
+      "
+    >
+      Read environmental history
+    </button>
+  </form>
+  @if (history.message()) {
+    <p role="status">{{ history.message() }}</p>
+  }
+  <p>
+    Observed evidence only; device and plantation coverage are unknown. The finite input profile
+    cannot accept every wire encoding. No inferred cadence, interpolation, rainfall total or causal
+    relationship with production.
+  </p>
+  @if (history.data(); as data) {
+    <h3>Environmental evidence · {{ data.projectionState }}</h3>
+    <p>
+      Window [{{ data.from }}, {{ data.to }}) · Exact matching count {{ data.totalMatchingCount }} ·
+      Returned {{ data.observations.length }}
+    </p>
+    <p>
+      Response {{ data.generatedAt }} · Last processed
+      {{ data.lastProcessedAt ?? 'No source processed' }} · Latest inspected source
+      {{ data.latestSourceEventAt ?? 'No source observed' }}
+    </p>
+    @if (data.availability === 'NONE') {
+      <p role="status">
+        No observed matching facts. Actual weather, rainfall and device coverage are unknown.
+      </p>
+    }
+    @if (data.projectionState === 'INCOMPLETE') {
+      <p class="warning" role="status">
+        Unresolved environmental conflicts: {{ data.conflictCount }} event IDs across the selected
+        block, including outside this window. Original observations are preserved.
+      </p>
+    }
+    @if (data.truncated) {
+      <p class="warning" role="status">
+        Truncated to the first 1000 observations. Narrow the UTC window to inspect additional facts;
+        the remainder is not absent.
+      </p>
+    }
+    <p>
+      Returned temperature {{ data.returnedKindCounts.AIR_TEMPERATURE }} · Soil moisture
+      {{ data.returnedKindCounts.SOIL_MOISTURE }} · Rain intervals
+      {{ data.returnedKindCounts.INTERVAL_RAINFALL }}
+    </p>
+    <div class="table-scroll">
+      <table>
+        <caption>
+          Exact per-device observations · observation time order
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Device / observation</th>
+            <th scope="col">Observed / received UTC</th>
+            <th scope="col">Kind / exact value / unit</th>
+            <th scope="col">Rain interval UTC</th>
+            <th scope="col">Source event / time</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of data.observations; track row.observationId) {
+            <tr>
+              <td>{{ row.deviceId }}<br />{{ row.observationId }}</td>
+              <td>{{ row.observedAt }}<br />{{ row.receivedAt }}</td>
+              <td>
+                {{ row.kind }}<br /><strong>{{ row.value }}</strong> {{ row.unit }}
+              </td>
+              <td>{{ interval(row) }}</td>
+              <td>{{ row.sourceEventId }}<br />{{ row.sourceEventAt }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Rain intervals can begin before the query window and can overlap. Values remain exact per
+      device; they are not summed or prorated.
+    </p>
+  }
+</section>

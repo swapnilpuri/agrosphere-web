@@ -23,6 +23,7 @@ describe('Authentication guard', () => {
             initialize: async () => {},
             authenticated: () => authenticated,
             canEnterWorkspace: () => allowed,
+            canEnterProductionWorkspace: () => false,
           },
         },
       ],
@@ -32,5 +33,26 @@ describe('Authentication guard', () => {
     );
     expect(result === true).toBe(expected);
     if (!expected) expect(result instanceof UrlTree).toBe(true);
+  });
+  it('redirects a production-only session without granting other feature routes', async () => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        {
+          provide: AuthService,
+          useValue: {
+            initialize: async () => {},
+            authenticated: () => true,
+            canEnterWorkspace: () => false,
+            canEnterProductionWorkspace: () => true,
+          },
+        },
+      ],
+    });
+    const result = await TestBed.runInInjectionContext(() =>
+      authGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot),
+    );
+    expect(result instanceof UrlTree).toBe(true);
+    expect(String(result)).toBe('/production-history');
   });
 });

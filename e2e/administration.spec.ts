@@ -30,7 +30,9 @@ test('boundary validation failures retain the preview and show the atomic job re
   await page.route('http://localhost:8080/api/v1/spatial/estates/*/features?**', (route) =>
     route.fulfill({
       json: { content: [], page: 0, size: 100, totalElements: 0 },
-      headers: { 'Access-Control-Allow-Origin': 'http://localhost:4200' },
+      headers: {
+        'Access-Control-Allow-Origin': `http://localhost:${process.env['AGRO_TEST_PORT'] ?? '4200'}`,
+      },
     }),
   );
   const job = {
@@ -45,7 +47,9 @@ test('boundary validation failures retain the preview and show the atomic job re
     route.fulfill({
       status: 202,
       json: job,
-      headers: { 'Access-Control-Allow-Origin': 'http://localhost:4200' },
+      headers: {
+        'Access-Control-Allow-Origin': `http://localhost:${process.env['AGRO_TEST_PORT'] ?? '4200'}`,
+      },
     }),
   );
   await page.route('http://localhost:8080/api/v1/spatial/imports/failed-import', (route) =>
@@ -56,7 +60,9 @@ test('boundary validation failures retain the preview and show the atomic job re
         rejectedCount: 1,
         validationReport: { errors: ['Feature[0]: Self-intersection'] },
       },
-      headers: { 'Access-Control-Allow-Origin': 'http://localhost:4200' },
+      headers: {
+        'Access-Control-Allow-Origin': `http://localhost:${process.env['AGRO_TEST_PORT'] ?? '4200'}`,
+      },
     }),
   );
   await signIn(page);
@@ -168,7 +174,7 @@ test('create estate/division/field, resolve a stale edit and preview/import supp
         status,
         json,
         headers: {
-          'Access-Control-Allow-Origin': 'http://localhost:4200',
+          'Access-Control-Allow-Origin': `http://localhost:${process.env['AGRO_TEST_PORT'] ?? '4200'}`,
           'Access-Control-Allow-Headers': 'authorization,content-type,x-correlation-id',
           'Access-Control-Allow-Methods': 'GET,POST,PUT,OPTIONS',
         },

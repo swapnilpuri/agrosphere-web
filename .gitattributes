@@ -11,3 +11,11 @@ contracts/previous-0.6.0/** -text
 contracts/previous-0.7.0/** -text whitespace=cr-at-eol
 
 contracts/previous-0.8.0/** -text whitespace=cr-at-eol
+
+# Exact independently accepted TLM-02 consumer pin.
+contracts/telemetry.openapi.json -text
+
+contracts/analytics.openapi.json -text
+
+# Exact prior accepted Analytics pin archive.
+docs/analytics-previous-0.11.0/** -text
