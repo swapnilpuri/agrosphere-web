@@ -1,3 +1,7 @@
+# M4 local Web 0.8.0 — 2026-11-10
+
+The production workspace includes scoped observed-mass forecasts, residual anomalies, immutable model/evaluation metrics and deterministic evidence explanations through independently pinned Contracts 0.13.0. Explicit generated/live chronology, cutoffs, withheld states and same-scope evidence links preserve source limits. No LLM or provider call. [Delivery/checks and owner-acceptance limits](../agrosphere-architecture/docs/milestones/M4_DELIVERY_VERIFICATION_2026_11_10.md). Private runtime configuration and existing features remain preserved; all business traffic stays on the configured Gateway. Do not enable REAL data or deploy from this local verification result.
+
 # AgroSphere web — Estate/GIS and plantation administration
 
 TLM-02 adds SIMULATED selected-block environmental values, source/received times, coverage and optional Cesium freshness tint through unchanged Telemetry 0.10.0. See [feature and verification guide](docs/TELEMETRY.md). Owner functional/M2, offline Android/English–French and REAL/production acceptance remain separate.

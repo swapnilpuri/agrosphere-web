@@ -23,6 +23,8 @@ test('generated M4 forecast anomaly registry and evidence assistant', async ({ p
     evaluationId: string;
     asOf: string;
     labelAsOf: string;
+    workerUsername: string;
+    workerPassword: string;
   };
   expect((await fs.readFile(path.join(root, '.generated-m4-owner'), 'utf8')).trim()).toBe(
     fixture.runId,
@@ -127,7 +129,18 @@ test('generated M4 forecast anomaly registry and evidence assistant', async ({ p
     await page.getByRole('button', { name: 'Inspect evaluation metrics', exact: true }).click();
     await expect(page.getByLabel('AI evidence record')).toContainText(fixture.evaluationId);
     await expect(page.getByLabel('AI evidence record')).toContainText('maeKg');
+    await expect(page.getByRole('table', { name: 'AI evaluation metrics' })).toBeVisible();
+    await expect(page.getByRole('cell', { name: '4.714286', exact: true })).toBeVisible();
     await page.screenshot({ path: 'test-results/m4-generated-live.png', fullPage: true });
+    await page.getByRole('button', { name: 'Log out', exact: true }).click();
+    await page.getByRole('button', { name: 'Sign in with Keycloak', exact: true }).click();
+    await page.locator('#username').fill(fixture.workerUsername);
+    await page.locator('#password').fill(fixture.workerPassword);
+    await page.locator('#kc-login').click();
+    await page.goto(fixture.webOrigin + '/production-history');
+    await expect(
+      page.getByRole('region', { name: 'Forecasts and evidence assistant' }),
+    ).toHaveCount(0);
     expect(errors).toEqual([]);
   } finally {
     server.closeAllConnections();

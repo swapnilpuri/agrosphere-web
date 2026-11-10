@@ -94,6 +94,8 @@ export class M4Store {
   private readonly config = inject(CONFIG);
   private readonly document = inject(DOCUMENT);
   private requests: Subscription[] = [];
+  private answerRequest?: Subscription;
+  private inspectionRequest?: Subscription;
   private generation = 0;
   private key = '';
   private allowed = false;
@@ -193,12 +195,14 @@ export class M4Store {
     );
   }
   ask(q: M4Query, intent: components['schemas']['AssistantRequest']['intent']) {
+    this.answerRequest?.unsubscribe();
+    this.inspectionRequest?.unsubscribe();
     this.answer.set(null);
     this.inspection.set(null);
     if (!this.valid(q) || !this.data()) return;
     const generation = this.generation;
     this.requests.push(
-      this.http
+      (this.answerRequest = this.http
         .post<Answer>(this.config.apiBaseUrl + this.prefix(q) + '/assistant', {
           datasetId: q.datasetId,
           mode: q.mode,
@@ -231,7 +235,7 @@ export class M4Store {
           error: (e) => {
             if (generation === this.generation) this.failed(e);
           },
-        }),
+        })),
     );
   }
   safeLink(q: M4Query, href: string) {
@@ -250,18 +254,19 @@ export class M4Store {
     }
   }
   inspect(q: M4Query, href: string) {
+    this.inspectionRequest?.unsubscribe();
     this.inspection.set(null);
     if (!this.valid(q) || !this.safeLink(q, href)) return;
     const generation = this.generation;
     this.requests.push(
-      this.http.get<unknown>(this.config.apiBaseUrl + href).subscribe({
+      (this.inspectionRequest = this.http.get<unknown>(this.config.apiBaseUrl + href).subscribe({
         next: (v) => {
           if (generation === this.generation) this.inspection.set(v);
         },
         error: (e) => {
           if (generation === this.generation) this.failed(e);
         },
-      }),
+      })),
     );
   }
 }

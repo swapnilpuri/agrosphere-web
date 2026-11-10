@@ -1,8 +1,9 @@
 import { JsonPipe } from '@angular/common';
-import { Component, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { AuthService } from '../../core/auth/auth.service';
 import { EstateStore } from '../estates/estate.store';
 import { M4Store, M4Query, hash } from './m4.store';
+import type { components } from '../../../api/ai.generated';
 @Component({
   selector: 'agro-m4',
   standalone: true,
@@ -10,6 +11,9 @@ import { M4Store, M4Query, hash } from './m4.store';
   providers: [M4Store],
   templateUrl: './m4.component.html',
   styleUrl: '../production/production.component.css',
+  styles: [
+    'pre { max-height: 24rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }',
+  ],
 })
 export class M4Component {
   readonly estateId = input.required<string>();
@@ -22,6 +26,14 @@ export class M4Component {
   readonly asOf = signal('');
   readonly labelAsOf = signal('');
   readonly mode = signal<M4Query['mode']>('GENERATED_POINT_IN_TIME');
+  readonly metrics = computed(() => {
+    const value = this.ai.inspection() as Partial<components['schemas']['Evaluation']> | null;
+    return Array.isArray(value?.metrics) ? value.metrics : [];
+  });
+  readonly modelRecord = computed(() => {
+    const value = this.ai.inspection() as Partial<components['schemas']['ModelRecord']> | null;
+    return value?.algorithm ? value : null;
+  });
   constructor() {
     effect(() => {
       this.dataset();

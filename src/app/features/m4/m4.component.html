@@ -107,7 +107,54 @@
     }
     @if (ai.inspection(); as evidence) {
       <h3>Authorized evidence record</h3>
-      <pre aria-label="AI evidence record">{{ evidence | json }}</pre>
+      @if (modelRecord(); as model) {
+        <p>
+          {{ model.algorithm }} · {{ model.stage }} · {{ model.coverage }} · {{ model.uncertainty }}
+        </p>
+        <p>
+          Window {{ model.windowDays }} calendar days; residual threshold
+          {{ model.thresholdKg }} kg. {{ model.rounding }}
+        </p>
+      }
+      @if (metrics().length) {
+        <table aria-label="AI evaluation metrics">
+          <caption>
+            Forward evaluation · synthetic labels · lower MAE indicates smaller observed-mass error
+          </caption>
+          <thead>
+            <tr>
+              <th>Split</th>
+              <th>Target</th>
+              <th>Method</th>
+              <th>Scored</th>
+              <th>Withheld</th>
+              <th>Total absolute error kg</th>
+              <th>MAE kg</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (metric of metrics(); track $index) {
+              <tr>
+                <td>{{ metric.split }}</td>
+                <td>{{ metric.target }}</td>
+                <td>{{ metric.algorithm }}</td>
+                <td>{{ metric.scored }}</td>
+                <td>{{ metric.withheld }}</td>
+                <td>{{ metric.sumAbsoluteErrorKg }}</td>
+                <td>{{ metric.maeKg ?? 'Unavailable' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        <p>
+          Both methods are shown, including worse results. Missing or incomplete labels are
+          unscored, never zero error.
+        </p>
+      }
+      <details>
+        <summary>Inspect immutable record details</summary>
+        <pre aria-label="AI evidence record">{{ evidence | json }}</pre>
+      </details>
     }
     <details>
       <summary>Frozen feature sources</summary>

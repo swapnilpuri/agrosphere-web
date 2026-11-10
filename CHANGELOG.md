@@ -1,3 +1,7 @@
+## 0.8.0 — 2026-11-10 (local M4)
+
+Add independently pinned Contracts 0.13.0 forecast/model/evaluation/closed-intent assistant clients and selected-block PREDICTED/SIMULATED/UNCALIBRATED evidence UI. Display exact forecast/comparator/actual/residual/withheld results, model records, forward metrics and inspectable same-scope links. Cancel stale requests across selection/account changes; no persistent answers or model/provider call. Current engineering evidence belongs in Architecture M4 delivery report; owner acceptance remains separate. Existing features/private runtime configuration preserved.
+
 # Changelog
 
 ## Unreleased - approved ANL-01 finite admission

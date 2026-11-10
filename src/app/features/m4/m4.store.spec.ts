@@ -149,4 +149,32 @@ describe('M4 scope, chronology, exact mass and evidence state', () => {
     ])
       expect(store.safeLink(query, href)).toBe(false);
   });
+  it('cancels superseded intents and evidence reads within the same selected block', () => {
+    store.load(query);
+    http.expectOne(() => true).flush(sample());
+    store.ask(query, 'FORECAST_EXPLANATION');
+    const oldAnswer = http.expectOne(() => true);
+    store.ask(query, 'ANOMALY_EXPLANATION');
+    const currentAnswer = http.expectOne(() => true);
+    expect(oldAnswer.cancelled).toBe(true);
+    currentAnswer.flush({
+      scope: { estateId, blockId },
+      provider: 'DETERMINISTIC_EVIDENCE_V1',
+      templateVersion: 'M4_EVIDENCE_TEMPLATES_V1',
+      status: 'ANSWERED',
+      intent: 'ANOMALY_EXPLANATION',
+      statements: [],
+      limitations: [],
+    });
+    expect(store.answer()?.intent).toBe('ANOMALY_EXPLANATION');
+    const link =
+      store.prefix(query) + '/models/' + 'b'.repeat(64) + '?datasetId=' + query.datasetId;
+    store.inspect(query, link);
+    const oldEvidence = http.expectOne(() => true);
+    store.inspect(query, link);
+    const currentEvidence = http.expectOne(() => true);
+    expect(oldEvidence.cancelled).toBe(true);
+    currentEvidence.flush({ stage: 'DEMO_ONLY' });
+    expect(store.inspection()).toEqual({ stage: 'DEMO_ONLY' });
+  });
 });

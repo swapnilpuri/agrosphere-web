@@ -1,5 +1,6 @@
 """Package public source with generated config only; never read/copy operator config or datasets."""
 import json
+import hashlib
 from pathlib import Path
 import shutil
 import subprocess
@@ -35,9 +36,13 @@ def main():
                 shutil.copyfile(ROOT / 'public' / name, context / 'public' / name)
             config = {'apiBaseUrl': 'http://127.0.0.1:1', 'keycloak': {'url': 'http://localhost:1', 'realm': 'generated-only', 'clientId': 'agrosphere-web'}, 'cesium': {}}
             (context / 'public/config.json').write_text(json.dumps(config))
+            record['sourceVersion'] = json.loads((context / 'package.json').read_text())['version']
+            record['publicSourceHashes'] = {p.relative_to(context).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
+                                            for p in sorted(context.rglob('*')) if p.is_file()}
             built = docker('build', '-t', image, str(context), check=False)
             (ROOT / 'target/anl02-docker-build.log').write_text(built.stdout + built.stderr, encoding='utf-8')
             assert built.returncode == 0, 'Public-source Web packaging build failed; inspect generated build log'
+            record['imageId'] = docker('image', 'inspect', '-f', '{{.Id}}', image).stdout.strip()
             container = docker('run', '-d', '--name', image, '--label', 'agrosphere.anl02.web.run=' + run, '-p', '127.0.0.1::8080', image).stdout.strip()
             port = docker('inspect', '-f', '{{(index (index .NetworkSettings.Ports "8080/tcp") 0).HostPort}}', container).stdout.strip()
             origin = 'http://127.0.0.1:' + port
