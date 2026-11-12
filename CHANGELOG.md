@@ -1,3 +1,7 @@
+## Unreleased — 2026-11-11 POC-CLOSE
+
+Add explicit loopback-fixture diagnostics for actual loaded Cesium entity coordinates, renderer identity and render timestamps. Add a dedicated hardware-browser capture for the approved view/frame/transfer/memory workloads. Live verification screenshots use per-run output paths so prior evidence remains available.
+
 ## 0.8.0 — 2026-11-10 (local M4)
 
 Add independently pinned Contracts 0.13.0 forecast/model/evaluation/closed-intent assistant clients and selected-block PREDICTED/SIMULATED/UNCALIBRATED evidence UI. Display exact forecast/comparator/actual/residual/withheld results, model records, forward metrics and inspectable same-scope links. Cancel stale requests across selection/account changes; no persistent answers or model/provider call. Current engineering evidence belongs in Architecture M4 delivery report; owner acceptance remains separate. Existing features/private runtime configuration preserved.
