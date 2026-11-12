@@ -4,7 +4,9 @@ import path from 'node:path';
 import http from 'node:http';
 test.use({ trace: 'off' });
 
-test('generated M4 forecast anomaly registry and evidence assistant', async ({ page }) => {
+test('generated M4 forecast anomaly registry and evidence assistant', async ({
+  page,
+}, testInfo) => {
   const fixturePath = process.env['M4_LIVE_FIXTURE'];
   test.skip(!fixturePath, 'Run only through the owned generated Analytics drill');
   if (!fixturePath) return;
@@ -131,7 +133,7 @@ test('generated M4 forecast anomaly registry and evidence assistant', async ({ p
     await expect(page.getByLabel('AI evidence record')).toContainText('maeKg');
     await expect(page.getByRole('table', { name: 'AI evaluation metrics' })).toBeVisible();
     await expect(page.getByRole('cell', { name: '4.714286', exact: true })).toBeVisible();
-    await page.screenshot({ path: 'test-results/m4-generated-live.png', fullPage: true });
+    await page.screenshot({ path: testInfo.outputPath('m4-generated-live.png'), fullPage: true });
     await page.getByRole('button', { name: 'Log out', exact: true }).click();
     await page.getByRole('button', { name: 'Sign in with Keycloak', exact: true }).click();
     await page.locator('#username').fill(fixture.workerUsername);

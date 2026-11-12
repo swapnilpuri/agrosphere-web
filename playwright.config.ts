@@ -16,6 +16,11 @@ export default defineConfig({
       },
   projects: [
     {
+      name: 'poc-close-rendered',
+      testMatch: 'poc-close-rendered.spec.ts',
+      use: { trace: 'off', headless: false },
+    },
+    {
       name: 'environment-live',
       testMatch: 'environment-live.spec.ts',
       use: {

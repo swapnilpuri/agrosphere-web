@@ -6,7 +6,7 @@ test.use({ trace: 'off' });
 
 test('generated real Telemetry/broker/Analytics/Gateway environmental history', async ({
   page,
-}) => {
+}, testInfo) => {
   const fixturePath = process.env['ENVIRONMENT_LIVE_FIXTURE'];
   test.skip(!fixturePath, 'Run only through the owned generated Analytics drill');
   if (!fixturePath) return;
@@ -123,7 +123,10 @@ test('generated real Telemetry/broker/Analytics/Gateway environmental history', 
     await expect(panel.getByText(/Unresolved environmental conflicts:/)).toBeVisible();
     await expect(panel.locator('tbody tr')).toHaveCount(20);
     await expect(panel.locator('.badge')).toBeVisible();
-    await page.screenshot({ path: 'test-results/environment-generated-live.png', fullPage: true });
+    await page.screenshot({
+      path: testInfo.outputPath('environment-generated-live.png'),
+      fullPage: true,
+    });
     expect(errors).toEqual([]);
   } finally {
     server.closeAllConnections();

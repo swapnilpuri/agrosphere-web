@@ -4,7 +4,9 @@ import path from 'node:path';
 import http from 'node:http';
 test.use({ trace: 'off' });
 
-test('generated real Operations/broker/Analytics/Gateway daily production', async ({ page }) => {
+test('generated real Operations/broker/Analytics/Gateway daily production', async ({
+  page,
+}, testInfo) => {
   const fixturePath = process.env['ANALYTICS_LIVE_FIXTURE'];
   test.skip(!fixturePath, 'Run only through the owned generated Analytics drill');
   if (!fixturePath) return;
@@ -123,7 +125,10 @@ test('generated real Operations/broker/Analytics/Gateway daily production', asyn
     await expect(page.getByText(/Incomplete source evidence:/)).toBeVisible();
     await page.getByText('Source version sample (3)', { exact: true }).click();
     await expect(page.locator('details li')).toHaveCount(3);
-    await page.screenshot({ path: 'test-results/analytics-generated-live.png', fullPage: true });
+    await page.screenshot({
+      path: testInfo.outputPath('analytics-generated-live.png'),
+      fullPage: true,
+    });
     expect(errors).toEqual([]);
   } finally {
     server.closeAllConnections();

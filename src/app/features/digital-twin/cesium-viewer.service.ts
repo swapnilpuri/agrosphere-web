@@ -42,12 +42,15 @@ export class CesiumViewerService {
   private hovered = '';
   private visible: ReadonlySet<Category> = new Set();
   private features: Feature[] = [];
+  private diagnosticProbe?: () => unknown;
+  private diagnosticRenderRemove?: () => void;
   async initialize(
     container: HTMLElement,
     config: AppConfig['cesium'],
     select: (id: string) => void,
     status: (message: string) => void,
     cameraBusy: (busy: boolean) => void = () => {},
+    verificationRun?: string,
   ) {
     this.config = config;
     this.report = status;
@@ -66,6 +69,58 @@ export class CesiumViewerService {
     });
     this.onCameraBusy = cameraBusy;
     const viewer = this.viewer;
+    if (verificationRun && /^[a-f0-9]{32}$/.test(verificationRun)) {
+      const renderTimesMs: number[] = [];
+      this.diagnosticRenderRemove = viewer.scene.postRender.addEventListener(() => {
+        if (document.visibilityState === 'visible' && renderTimesMs.length < 1000000)
+          renderTimesMs.push(performance.now());
+      });
+      // Read-only loaded-entity evidence for an explicit loopback generated run.
+      // No session, token, command draft or raw API response is exposed.
+      this.diagnosticProbe = () => {
+        const time = JulianDate.now();
+        const rows: {
+          featureId: string;
+          blockId: string;
+          geometryVersion: number;
+          rings: number[][][];
+        }[] = [];
+        let vertices = 0;
+        for (const entity of this.sources.get('BLOCK')?.entities.values ?? []) {
+          const properties = entity.properties?.getValue(time);
+          const hierarchy = entity.polygon?.hierarchy?.getValue(time);
+          const rings: number[][][] = [];
+          const collect = (polygon: {
+            positions: Cartesian3[];
+            holes?: { positions: Cartesian3[]; holes?: never[] }[];
+          }) => {
+            vertices += polygon.positions.length;
+            if (vertices > 20000) throw new Error('Owned diagnostic vertex bound');
+            rings.push(polygon.positions.map((p) => [p.x, p.y, p.z]));
+            for (const hole of polygon.holes ?? []) collect(hole);
+          };
+          if (hierarchy) collect(hierarchy);
+          rows.push({
+            featureId: properties?.id ?? entity.id,
+            blockId: properties?.referenceEntityId,
+            geometryVersion: properties?.geometryVersion,
+            rings,
+          });
+          if (rows.length > 100) throw new Error('Owned diagnostic feature bound');
+        }
+        const gl = viewer.scene.canvas.getContext('webgl2');
+        const debug = gl?.getExtension('WEBGL_debug_renderer_info');
+        return {
+          runId: verificationRun,
+          kind: 'actual loaded Cesium entity ECEF positions',
+          rows,
+          canvas: { width: viewer.scene.canvas.width, height: viewer.scene.canvas.height },
+          renderer: debug ? gl?.getParameter(debug.UNMASKED_RENDERER_WEBGL) : 'UNAVAILABLE',
+          renderTimesMs: [...renderTimesMs],
+        };
+      };
+      (window as Window & { __agroPocClose?: () => unknown }).__agroPocClose = this.diagnosticProbe;
+    }
     this.cameraListeners = [
       viewer.camera.moveStart.addEventListener(() => cameraBusy(true)),
       viewer.camera.moveEnd.addEventListener(() => cameraBusy(false)),
@@ -357,6 +412,11 @@ export class CesiumViewerService {
       : null;
   }
   destroy() {
+    const browser = window as Window & { __agroPocClose?: () => unknown };
+    if (browser.__agroPocClose === this.diagnosticProbe) delete browser.__agroPocClose;
+    this.diagnosticProbe = undefined;
+    this.diagnosticRenderRemove?.();
+    this.diagnosticRenderRemove = undefined;
     this.overlayBlock = '';
     this.overlayTint = undefined;
     ++this.generation;

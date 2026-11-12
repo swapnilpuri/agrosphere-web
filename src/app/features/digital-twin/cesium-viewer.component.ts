@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { CesiumViewerService } from './cesium-viewer.service';
 import { EstateStore } from '../estates/estate.store';
-import { CONFIG } from '../../core/config';
+import { CONFIG, fixtureVerification } from '../../core/config';
 import { TelemetryStore } from '../telemetry/telemetry.store';
 @Component({
   selector: 'agro-cesium-viewer',
@@ -100,6 +100,7 @@ export class CesiumViewerComponent implements AfterViewInit, OnDestroy {
           (id) => this.zone.run(() => this.store.selectBlock(id)),
           (message) => this.zone.run(() => this.status.set(message)),
           (busy) => this.zone.run(() => this.moving.set(busy)),
+          fixtureVerification(this.config),
         )
         .then(() => this.zone.run(() => this.ready.set(true)))
         .catch(() =>
