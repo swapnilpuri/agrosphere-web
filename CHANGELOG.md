@@ -1,3 +1,7 @@
+## Unreleased — 2026-11-13 Digital Twin focus
+
+Keep Columbus and 2D field-focus destinations in projected coordinates; retain globe/ECEF handling and terrain clearance in 3D. Following the owner's reported regression, remove unconditional field refocus after mode changes: preserve native 3D globe navigation and replay only explicit focus requested during a transition. Aim Columbus focus obliquely at the field centre; keep 2D overhead. Regression coverage checks projected coordinates, actual camera pitch/ground intersection, queued focus, native3D pose preservation and listener teardown. Actual browser validation remains pending owned-profile cleanup; the earlier invalid-frustum report is not yet verified fixed.
+
 ## Unreleased — 2026-11-11 POC-CLOSE
 
 Add explicit loopback-fixture diagnostics for actual loaded Cesium entity coordinates, renderer identity and render timestamps. Add a dedicated hardware-browser capture for the approved view/frame/transfer/memory workloads. Live verification screenshots use per-run output paths so prior evidence remains available.

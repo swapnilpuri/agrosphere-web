@@ -16,6 +16,17 @@ export default defineConfig({
       },
   projects: [
     {
+      name: 'twin-rendering',
+      testMatch: 'digital-twin-rendering.spec.ts',
+      use: {
+        channel: 'msedge',
+        headless: false,
+        viewport: { width: 1920, height: 1080 },
+        trace: 'off',
+        launchOptions: { args: ['--disable-features=LocalNetworkAccessChecks'] },
+      },
+    },
+    {
       name: 'poc-close-rendered',
       testMatch: 'poc-close-rendered.spec.ts',
       use: { trace: 'off', headless: false },

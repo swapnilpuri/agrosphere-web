@@ -19,6 +19,7 @@ import {
   Cartesian3,
   Cartographic,
   Cesium3DTileset,
+  SceneMode,
 } from 'cesium';
 import { Asset, Category, Feature, Layer, assetCategory, colors } from '../../shared/models';
 import { AppConfig } from '../../core/config';
@@ -30,6 +31,7 @@ export class CesiumViewerService {
   private report: (message: string) => void = () => {};
   private onCameraBusy: (busy: boolean) => void = () => {};
   private cameraListeners: (() => void)[] = [];
+  private pendingBounds?: number[];
   private viewer?: Viewer;
   private handler?: ScreenSpaceEventHandler;
   private sources = new Map<Category, GeoJsonDataSource>();
@@ -44,6 +46,7 @@ export class CesiumViewerService {
   private features: Feature[] = [];
   private diagnosticProbe?: () => unknown;
   private diagnosticRenderRemove?: () => void;
+  private diagnosticErrorRemove?: () => void;
   async initialize(
     container: HTMLElement,
     config: AppConfig['cesium'],
@@ -71,6 +74,12 @@ export class CesiumViewerService {
     const viewer = this.viewer;
     if (verificationRun && /^[a-f0-9]{32}$/.test(verificationRun)) {
       const renderTimesMs: number[] = [];
+      const renderErrors: string[] = [];
+      this.diagnosticErrorRemove = viewer.scene.renderError.addEventListener(
+        (_scene, error: Error) => {
+          if (renderErrors.length < 20) renderErrors.push(error.message);
+        },
+      );
       this.diagnosticRenderRemove = viewer.scene.postRender.addEventListener(() => {
         if (document.visibilityState === 'visible' && renderTimesMs.length < 1000000)
           renderTimesMs.push(performance.now());
@@ -110,6 +119,10 @@ export class CesiumViewerService {
         }
         const gl = viewer.scene.canvas.getContext('webgl2');
         const debug = gl?.getExtension('WEBGL_debug_renderer_info');
+        const centre = viewer.camera.pickEllipsoid(
+          new Cartesian2(viewer.canvas.clientWidth / 2, viewer.canvas.clientHeight / 2),
+          viewer.scene.globe.ellipsoid,
+        );
         return {
           runId: verificationRun,
           kind: 'actual loaded Cesium entity ECEF positions',
@@ -117,14 +130,31 @@ export class CesiumViewerService {
           canvas: { width: viewer.scene.canvas.width, height: viewer.scene.canvas.height },
           renderer: debug ? gl?.getParameter(debug.UNMASKED_RENDERER_WEBGL) : 'UNAVAILABLE',
           renderTimesMs: [...renderTimesMs],
+          sceneMode: viewer.scene.mode,
+          morphTime: viewer.scene.morphTime,
+          camera: {
+            position: { ...viewer.camera.position },
+            cartographic: { ...viewer.camera.positionCartographic },
+            groundCentre: centre ? { ...Cartographic.fromCartesian(centre) } : null,
+            pitch: viewer.camera.pitch,
+            frustum: Object.fromEntries(
+              ['left', 'right', 'top', 'bottom', 'near', 'far', 'fov', 'aspectRatio', 'width'].map(
+                (key) => [key, (viewer.camera.frustum as unknown as Record<string, number>)[key]],
+              ),
+            ),
+          },
+          dimensions: {
+            containerWidth: container.clientWidth,
+            containerHeight: container.clientHeight,
+            canvasWidth: viewer.canvas.clientWidth,
+            canvasHeight: viewer.canvas.clientHeight,
+          },
+          renderErrors: [...renderErrors],
         };
       };
       (window as Window & { __agroPocClose?: () => unknown }).__agroPocClose = this.diagnosticProbe;
     }
-    this.cameraListeners = [
-      viewer.camera.moveStart.addEventListener(() => cameraBusy(true)),
-      viewer.camera.moveEnd.addEventListener(() => cameraBusy(false)),
-    ];
+    this.observeCamera(viewer, cameraBusy);
     viewer.scene.globe.baseColor = Color.fromCssColorString('#183d42');
     status('Offline ellipsoid · no imagery');
     this.handler = new ScreenSpaceEventHandler(viewer.scene.canvas);
@@ -187,10 +217,25 @@ export class CesiumViewerService {
       }
     }
   }
+  private observeCamera(viewer: Viewer, cameraBusy: (busy: boolean) => void) {
+    this.cameraListeners = [
+      viewer.camera.moveStart.addEventListener(() => cameraBusy(true)),
+      viewer.camera.moveEnd.addEventListener(() => cameraBusy(false)),
+      viewer.scene.morphStart.addEventListener(() => viewer.camera.cancelFlight()),
+      viewer.scene.morphComplete.addEventListener(() => {
+        // Leave Cesium's mode-specific view intact unless focus was explicitly
+        // requested during the transition. Mode changes must not force a zoom.
+        const pending = this.pendingBounds;
+        this.pendingBounds = undefined;
+        if (pending) this.bounds(pending);
+      }),
+    ];
+  }
   async load(features: Feature[], assets: Asset[], layers: Layer[]) {
     const viewer = this.viewer;
     if (!viewer || viewer.isDestroyed()) return;
     const generation = ++this.generation;
+    this.pendingBounds = undefined;
     this.features = features;
     viewer.dataSources.removeAll(true);
     for (const item of this.external.values())
@@ -370,19 +415,39 @@ export class CesiumViewerService {
     const viewer = this.viewer;
     if (!viewer || viewer.isDestroyed() || bbox.length !== 4 || !bbox.every(Number.isFinite))
       return;
-    const destination = viewer.camera.getRectangleCameraCoordinates(
+    if (viewer.scene.mode === SceneMode.MORPHING) {
+      this.pendingBounds = [...bbox];
+      return;
+    }
+    this.pendingBounds = undefined;
+    let destination = viewer.camera.getRectangleCameraCoordinates(
       Rectangle.fromDegrees(bbox[0], bbox[1], bbox[2], bbox[3]),
     );
     if (!destination) return;
-    const position = Cartographic.fromCartesian(destination);
-    position.height = Math.max(
-      position.height,
-      (viewer.scene.globe.getHeight(position) ?? 0) + 500,
-    );
+    const globeCoordinates = viewer.scene.mode === SceneMode.SCENE3D;
+    if (globeCoordinates) {
+      const position = Cartographic.fromCartesian(destination);
+      position.height = Math.max(
+        position.height,
+        (viewer.scene.globe.getHeight(position) ?? 0) + 500,
+      );
+      destination = Cartesian3.fromRadians(position.longitude, position.latitude, position.height);
+    } else {
+      // 2D and Columbus destinations are already projected map coordinates.
+      // Reinterpreting them as ECEF moves focus away from the canonical field.
+      destination.z = Math.max(destination.z, 500);
+    }
+    const pitch = viewer.scene.mode === SceneMode.COLUMBUS_VIEW ? -Math.PI / 4 : -Math.PI / 2;
+    if (viewer.scene.mode === SceneMode.COLUMBUS_VIEW) {
+      // Move south of the target so an oblique north-facing camera still looks
+      // at the field centre, rather than tilting away from an overhead position.
+      destination.y -= destination.z / Math.tan(-pitch);
+    }
     this.onCameraBusy(true);
     viewer.camera.flyTo({
-      destination: Cartesian3.fromRadians(position.longitude, position.latitude, position.height),
-      orientation: { heading: 0, pitch: -Math.PI / 2, roll: 0 },
+      destination,
+      convert: globeCoordinates,
+      orientation: { heading: 0, pitch, roll: 0 },
       duration: 1.1,
       complete: () => this.onCameraBusy(false),
       cancel: () => this.onCameraBusy(false),
@@ -417,8 +482,11 @@ export class CesiumViewerService {
     this.diagnosticProbe = undefined;
     this.diagnosticRenderRemove?.();
     this.diagnosticRenderRemove = undefined;
+    this.diagnosticErrorRemove?.();
+    this.diagnosticErrorRemove = undefined;
     this.overlayBlock = '';
     this.overlayTint = undefined;
+    this.pendingBounds = undefined;
     ++this.generation;
     for (const remove of this.cameraListeners) remove();
     this.cameraListeners = [];
